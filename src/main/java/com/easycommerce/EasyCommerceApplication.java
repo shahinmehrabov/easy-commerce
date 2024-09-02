@@ -1,4 +1,4 @@
-package com.easy_commerce;
+package com.easycommerce;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

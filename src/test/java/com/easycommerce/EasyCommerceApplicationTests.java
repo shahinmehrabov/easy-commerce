@@ -1,4 +1,4 @@
-package com.easy_commerce;
+package com.easycommerce;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -2,61 +2,63 @@ package com.easycommerce.category;
 
 import com.easycommerce.exception.APIException;
 import com.easycommerce.exception.ResourceNotFoundException;
+import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@AllArgsConstructor
 @Service
 public class CategoryServiceImpl implements CategoryService{
     private final CategoryRepository categoryRepository;
-
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
+    private final ModelMapper modelMapper;
 
     @Override
-    public List<Category> getAllCategories() {
+    public CategoryResponse getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
         if (categories.isEmpty())
             throw new APIException("No category found");
 
-        return categories;
+        List<CategoryDTO> categoryDTOs = categories.stream()
+                .map(category -> modelMapper.map(category, CategoryDTO.class))
+                .toList();
+
+        return new CategoryResponse(categoryDTOs);
     }
 
     @Override
-    public void createCategory(Category category) {
-        verifyCategory(category.getName());
-        categoryRepository.save(category);
+    public CategoryDTO createCategory(CategoryDTO categoryDTO) {
+        if (categoryRepository.existsByName(categoryDTO.getName()))
+            throw new APIException(String.format("Category with the name %s already exists", categoryDTO.getName()));
+
+        Category category = modelMapper.map(categoryDTO, Category.class);
+        Category savedCategory = categoryRepository.save(category);
+
+        return modelMapper.map(savedCategory, CategoryDTO.class);
     }
 
     @Override
-    public String deleteCategory(Long id) {
-        verifyCategory(id);
-        categoryRepository.deleteById(id);
+    public CategoryDTO deleteCategory(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
 
-        return "Category with id = " + id + " deleted";
+        categoryRepository.delete(category);
+        return modelMapper.map(category, CategoryDTO.class);
     }
 
     @Override
-    public Category updateCategory(Category category, Long id) {
-        verifyCategory(id, category.getName());
-        category.setId(id);
-
-        return categoryRepository.save(category);
-    }
-
-    private void verifyCategory(Long id, String name) {
-        verifyCategory(id);
-        verifyCategory(name);
-    }
-
-    private void verifyCategory(Long id) {
+    public CategoryDTO updateCategory(CategoryDTO categoryDTO, Long id) {
         if (!categoryRepository.existsById(id))
             throw new ResourceNotFoundException("Category", "id", id);
-    }
 
-    private void verifyCategory(String name) {
-        if (categoryRepository.existsByName(name))
-            throw new APIException(String.format("Category with the name %s already exists", name));
+        if (categoryRepository.existsByName(categoryDTO.getName()))
+            throw new APIException(String.format("Category with the name %s already exists", categoryDTO.getName()));
+
+        categoryDTO.setId(id);
+        Category category = modelMapper.map(categoryDTO, Category.class);
+        Category savedCategory = categoryRepository.save(category);
+
+        return modelMapper.map(savedCategory, CategoryDTO.class);
     }
 }

@@ -1,5 +1,6 @@
 package com.easycommerce.category;
 
+import com.easycommerce.config.AppConstants;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,8 +14,12 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/public/categories")
-    public ResponseEntity<CategoryResponse> getAllCategories() {
-        return new ResponseEntity<>(categoryService.getAllCategories(), HttpStatus.OK);
+    public ResponseEntity<CategoryResponse> getAllCategories(
+            @RequestParam(name = "pageNo", defaultValue = AppConstants.PAGE_NO) int pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE) int pageSize) {
+
+        CategoryResponse categoryResponse = categoryService.getAllCategories(pageNo, pageSize);
+        return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
     }
 
     @PostMapping("/admin/categories")

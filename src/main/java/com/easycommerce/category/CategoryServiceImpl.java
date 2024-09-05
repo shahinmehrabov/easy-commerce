@@ -4,6 +4,9 @@ import com.easycommerce.exception.APIException;
 import com.easycommerce.exception.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,16 +18,25 @@ public class CategoryServiceImpl implements CategoryService{
     private final ModelMapper modelMapper;
 
     @Override
-    public CategoryResponse getAllCategories() {
-        List<Category> categories = categoryRepository.findAll();
-        if (categories.isEmpty())
+    public CategoryResponse getAllCategories(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Category> categoryPage = categoryRepository.findAll(pageable);
+        if (categoryPage.isEmpty())
             throw new APIException("No category found");
 
-        List<CategoryDTO> categoryDTOs = categories.stream()
+        List<CategoryDTO> categoryDTOs = categoryPage.stream()
                 .map(category -> modelMapper.map(category, CategoryDTO.class))
                 .toList();
 
-        return new CategoryResponse(categoryDTOs);
+        CategoryResponse categoryResponse = new CategoryResponse();
+        categoryResponse.setContent(categoryDTOs);
+        categoryResponse.setPageNo(pageNo);
+        categoryResponse.setPageSize(pageSize);
+        categoryResponse.setTotalElements(categoryPage.getTotalElements());
+        categoryResponse.setTotalPages(categoryPage.getTotalPages());
+        categoryResponse.setLastPage(categoryPage.isLast());
+
+        return categoryResponse;
     }
 
     @Override

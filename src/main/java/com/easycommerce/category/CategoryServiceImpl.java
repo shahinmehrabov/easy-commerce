@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,8 +19,10 @@ public class CategoryServiceImpl implements CategoryService{
     private final ModelMapper modelMapper;
 
     @Override
-    public CategoryResponse getAllCategories(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+    public CategoryResponse getAllCategories(int pageNo, int pageSize, String sortBy, String sortOrder) {
+        Sort sort = sortOrder.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<Category> categoryPage = categoryRepository.findAll(pageable);
         if (categoryPage.isEmpty())
             throw new APIException("No category found");
@@ -32,6 +35,8 @@ public class CategoryServiceImpl implements CategoryService{
         categoryResponse.setContent(categoryDTOs);
         categoryResponse.setPageNo(pageNo);
         categoryResponse.setPageSize(pageSize);
+        categoryResponse.setSortBy(sortBy);
+        categoryResponse.setSortOrder(sortOrder);
         categoryResponse.setTotalElements(categoryPage.getTotalElements());
         categoryResponse.setTotalPages(categoryPage.getTotalPages());
         categoryResponse.setLastPage(categoryPage.isLast());

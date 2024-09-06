@@ -13,6 +13,8 @@ public class CategoryResponse {
     private List<CategoryDTO> content;
     private int pageNo;
     private int pageSize;
+    private String sortBy;
+    private String sortOrder;
     private long totalElements;
     private int totalPages;
     private boolean isLastPage;

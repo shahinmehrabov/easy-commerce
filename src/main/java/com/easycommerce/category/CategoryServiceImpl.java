@@ -37,6 +37,14 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public CategoryDTO getCategoryByID(long categoryID) {
+        Category category = categoryRepository.findById(categoryID)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryID));
+
+        return modelMapper.map(category, CategoryDTO.class);
+    }
+
+    @Override
     public CategoryDTO addCategory(CategoryDTO categoryDTO) {
         if (categoryRepository.existsByName(categoryDTO.getName()))
             throw new APIException(String.format("Category with the name '%s' already exists", categoryDTO.getName()));

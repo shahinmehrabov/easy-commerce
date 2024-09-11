@@ -42,17 +42,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO addProduct(ProductDTO productDTO, long categoryID) {
-        Category category = categoryRepository.findById(categoryID)
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryID));
-
+    public ProductDTO addProduct(ProductDTO productDTO) {
         if (productRepository.existsByName(productDTO.getName()))
             throw new APIException(String.format("Product with the name '%s' already exists", productDTO.getName()));
 
+        if (productDTO.getCategoryID() == null)
+            throw new APIException("Category can not be null");
+
+        Category category = getCategory(productDTO.getCategoryID());
         Product product = modelMapper.map(productDTO, Product.class);
-        product.setCategory(category);
+
         product.setSpecialPrice();
         product.setImage(defaultImageName);
+        product.setCategory(category);
 
         Product savedProduct = productRepository.save(product);
         return modelMapper.map(savedProduct, ProductDTO.class);
@@ -60,9 +62,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse getProductsByCategory(long categoryID, int pageNumber, int pageSize, String sortBy, String sortOrder) {
-        Category category = categoryRepository.findById(categoryID)
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryID));
-
+        Category category = getCategory(categoryID);
         Sort sort = getSort(sortBy, sortOrder);
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         Page<Product> productPage = productRepository.findByCategory(category, pageable);
@@ -84,13 +84,20 @@ public class ProductServiceImpl implements ProductService {
         Product currentProduct = productRepository.findById(productID)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productID));
 
+        if (productDTO.getCategoryID() == null)
+            throw new APIException("Category can not be null");
+
+        Category category = getCategory(productDTO.getCategoryID());
+
         currentProduct.setName(productDTO.getName());
         currentProduct.setDescription(productDTO.getDescription());
+        // todo null image
         currentProduct.setImage(productDTO.getImage());
         currentProduct.setQuantity(productDTO.getQuantity());
         currentProduct.setPrice(productDTO.getPrice());
         currentProduct.setDiscount(productDTO.getDiscount());
         currentProduct.setSpecialPrice();
+        currentProduct.setCategory(category);
 
         Product savedProduct = productRepository.save(currentProduct);
         return modelMapper.map(savedProduct, ProductDTO.class);
@@ -115,6 +122,11 @@ public class ProductServiceImpl implements ProductService {
 
         Product updatedProduct = productRepository.save(product);
         return modelMapper.map(updatedProduct, ProductDTO.class);
+    }
+
+    private Category getCategory(long categoryID) {
+        return categoryRepository.findById(categoryID)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryID));
     }
 
     private Sort getSort(String sortBy, String sortOrder) {

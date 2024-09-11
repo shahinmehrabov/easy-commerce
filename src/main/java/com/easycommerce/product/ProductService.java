@@ -8,6 +8,7 @@ public interface ProductService {
     ProductResponse getAllProducts(int pageNumber, int pageSize, String sortBy, String sortOrder);
     ProductResponse getProductsByCategory(long categoryID, int pageNumber, int pageSize, String sortBy, String sortOrder);
     ProductResponse getProductsByKeyword(String keyword, int pageNumber, int pageSize, String sortBy, String sortOrder);
+    ProductDTO getProductByID(long productID);
     ProductDTO addProduct(ProductDTO productDTO);
     ProductDTO updateProduct(ProductDTO productDTO, long productID);
     ProductDTO deleteProduct(long productID);

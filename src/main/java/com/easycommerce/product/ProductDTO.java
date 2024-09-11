@@ -1,6 +1,7 @@
 package com.easycommerce.product;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,5 +25,7 @@ public class ProductDTO {
     private double price;
     private double discount;
     private double specialPrice;
+
+    @NotNull(message = "Category can not be null")
     private Long categoryID;
 }

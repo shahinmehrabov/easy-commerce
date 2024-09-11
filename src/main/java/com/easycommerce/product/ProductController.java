@@ -51,6 +51,12 @@ public class ProductController {
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
 
+    @GetMapping("/public/products/{productID}")
+    public ResponseEntity<ProductDTO> getProductByID(@PathVariable long productID) {
+        ProductDTO productDTO = productService.getProductByID(productID);
+        return new ResponseEntity<>(productDTO, HttpStatus.OK);
+    }
+
     @PostMapping("/admin/products")
     public ResponseEntity<ProductDTO> addProduct(@Valid @RequestBody ProductDTO productDTO) {
         ProductDTO savedProductDTO = productService.addProduct(productDTO);

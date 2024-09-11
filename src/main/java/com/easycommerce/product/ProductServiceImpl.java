@@ -2,7 +2,6 @@ package com.easycommerce.product;
 
 import com.easycommerce.category.Category;
 import com.easycommerce.category.CategoryRepository;
-import com.easycommerce.exception.APIException;
 import com.easycommerce.exception.ResourceNotFoundException;
 import com.easycommerce.service.FileService;
 import lombok.RequiredArgsConstructor;
@@ -42,27 +41,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO addProduct(ProductDTO productDTO) {
-        if (productRepository.existsByName(productDTO.getName()))
-            throw new APIException(String.format("Product with the name '%s' already exists", productDTO.getName()));
-
-        if (productDTO.getCategoryID() == null)
-            throw new APIException("Category can not be null");
-
-        Category category = getCategory(productDTO.getCategoryID());
-        Product product = modelMapper.map(productDTO, Product.class);
-
-        product.setSpecialPrice();
-        product.setImage(defaultImageName);
-        product.setCategory(category);
-
-        Product savedProduct = productRepository.save(product);
-        return modelMapper.map(savedProduct, ProductDTO.class);
-    }
-
-    @Override
     public ProductResponse getProductsByCategory(long categoryID, int pageNumber, int pageSize, String sortBy, String sortOrder) {
-        Category category = getCategory(categoryID);
+        Category category = getCategoryByID(categoryID);
         Sort sort = getSort(sortBy, sortOrder);
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         Page<Product> productPage = productRepository.findByCategory(category, pageable);
@@ -80,19 +60,33 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO updateProduct(ProductDTO productDTO, long productID) {
-        Product currentProduct = productRepository.findById(productID)
+    public ProductDTO getProductByID(long productID) {
+        Product product = productRepository.findById(productID)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productID));
 
-        if (productDTO.getCategoryID() == null)
-            throw new APIException("Category can not be null");
+        return modelMapper.map(product, ProductDTO.class);
+    }
 
-        Category category = getCategory(productDTO.getCategoryID());
+    @Override
+    public ProductDTO addProduct(ProductDTO productDTO) {
+        Category category = getCategoryByID(productDTO.getCategoryID());
+        Product product = modelMapper.map(productDTO, Product.class);
+
+        product.setSpecialPrice();
+        product.setImage(defaultImageName);
+        product.setCategory(category);
+
+        Product savedProduct = productRepository.save(product);
+        return modelMapper.map(savedProduct, ProductDTO.class);
+    }
+
+    @Override
+    public ProductDTO updateProduct(ProductDTO productDTO, long productID) {
+        Product currentProduct = modelMapper.map(getProductByID(productID), Product.class);
+        Category category = getCategoryByID(productDTO.getCategoryID());
 
         currentProduct.setName(productDTO.getName());
         currentProduct.setDescription(productDTO.getDescription());
-        // todo null image
-        currentProduct.setImage(productDTO.getImage());
         currentProduct.setQuantity(productDTO.getQuantity());
         currentProduct.setPrice(productDTO.getPrice());
         currentProduct.setDiscount(productDTO.getDiscount());
@@ -105,8 +99,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO deleteProduct(long productID) {
-        Product product = productRepository.findById(productID)
-                .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productID));
+        Product product = modelMapper.map(getProductByID(productID), Product.class);
 
         productRepository.delete(product);
         return modelMapper.map(product, ProductDTO.class);
@@ -114,9 +107,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO updateProductImage(long productID, MultipartFile image) throws IOException {
-        Product product = productRepository.findById(productID)
-                .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productID));
-
+        Product product = modelMapper.map(getProductByID(productID), Product.class);
         String imageName = fileService.uploadImage(imagePath, image);
         product.setImage(imageName);
 
@@ -124,7 +115,7 @@ public class ProductServiceImpl implements ProductService {
         return modelMapper.map(updatedProduct, ProductDTO.class);
     }
 
-    private Category getCategory(long categoryID) {
+    private Category getCategoryByID(long categoryID) {
         return categoryRepository.findById(categoryID)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryID));
     }

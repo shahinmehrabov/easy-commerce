@@ -1,6 +1,7 @@
 package com.easycommerce.product;
 
 import com.easycommerce.category.Category;
+import com.easycommerce.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -11,7 +12,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "products")
+@Entity
+@Table(name = "products")
 public class Product {
 
     @Id
@@ -33,6 +35,10 @@ public class Product {
 
     @ManyToOne
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "seller_id")
+    private User user;
 
     public void setSpecialPrice() {
         specialPrice = price * (discount * 0.01);

@@ -6,4 +6,5 @@ public class AppConstants {
     public static final String SORT_CATEGORIES_BY = "id";
     public static final String SORT_ORDER = "asc";
     public static final String SORT_PRODUCTS_BY = "id";
+    public static final String TOKEN_PREFIX = "Bearer ";
 }

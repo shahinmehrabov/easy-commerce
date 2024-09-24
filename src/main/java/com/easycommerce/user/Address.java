@@ -3,17 +3,11 @@ package com.easycommerce.user;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "addresses")
 public class Address {
@@ -45,16 +39,7 @@ public class Address {
     @Size(min = 3, message = "Zip must have at least 3 characters")
     private String zip;
 
-    @ToString.Exclude
-    @ManyToMany(mappedBy = "addresses")
-    private List<User> users = new ArrayList<>();
-
-    public Address(String street, String building, String city, String state, String country, String zip) {
-        this.street = street;
-        this.building = building;
-        this.city = city;
-        this.state = state;
-        this.country = country;
-        this.zip = zip;
-    }
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

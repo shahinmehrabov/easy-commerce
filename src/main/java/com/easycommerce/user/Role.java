@@ -1,14 +1,11 @@
 package com.easycommerce.user;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "roles")
 public class Role {
@@ -17,11 +14,10 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ToString.Exclude
     @Enumerated(EnumType.STRING)
-    private Roles role;
+    private RoleName name;
 
-    public Role(Roles role) {
-        this.role = role;
+    public Role(RoleName name) {
+        this.name = name;
     }
 }

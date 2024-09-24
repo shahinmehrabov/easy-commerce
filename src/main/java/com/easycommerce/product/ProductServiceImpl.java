@@ -3,7 +3,7 @@ package com.easycommerce.product;
 import com.easycommerce.category.Category;
 import com.easycommerce.category.CategoryRepository;
 import com.easycommerce.exception.ResourceNotFoundException;
-import com.easycommerce.service.FileService;
+import com.easycommerce.image.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +23,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
-    private final FileService fileService;
+    private final ImageService imageService;
 
     @Value("${product.image.path}")
     private String imagePath;
@@ -108,7 +108,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO updateProductImage(long productID, MultipartFile image) throws IOException {
         Product product = modelMapper.map(getProductByID(productID), Product.class);
-        String imageName = fileService.uploadImage(imagePath, image);
+        String imageName = imageService.uploadImage(imagePath, image);
         product.setImage(imageName);
 
         Product updatedProduct = productRepository.save(product);

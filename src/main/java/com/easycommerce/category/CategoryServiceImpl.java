@@ -12,42 +12,31 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
+
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
 
     @Override
-    public CategoryResponse getAllCategories(int pageNumber, int pageSize, String sortBy, String sortOrder) {
-        Sort sort = getSort(sortBy, sortOrder);
+    public CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+        Sort sort = buildSort(sortBy, sortOrder);
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         Page<Category> categoryPage = categoryRepository.findAll(pageable);
 
-        return getCategoryResponse(categoryPage, sortBy, sortOrder);
+        return buildCategoryResponse(categoryPage, sortBy, sortOrder);
     }
 
     @Override
-    public CategoryResponse getCategoriesByKeyword(String keyword, int pageNumber, int pageSize, String sortBy, String sortOrder) {
-        Sort sort = getSort(sortBy, sortOrder);
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-        Page<Category> categoryPage = categoryRepository.findByNameLikeIgnoreCase("%" + keyword + "%", pageable);
-
-        return getCategoryResponse(categoryPage, sortBy, sortOrder);
-    }
-
-    @Override
-    public CategoryDTO getCategoryByID(long categoryID) {
-        Category category = categoryRepository.findById(categoryID)
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryID));
-
+    public CategoryDTO getCategoryById(Long categoryId) {
+        Category category = getCategoryOrThrowById(categoryId);
         return modelMapper.map(category, CategoryDTO.class);
     }
 
     @Override
-    public CategoryDTO addCategory(CategoryDTO categoryDTO) {
-        if (categoryRepository.existsByName(categoryDTO.getName()))
-            throw new APIException(String.format("Category with the name '%s' already exists", categoryDTO.getName()));
+    public CategoryDTO saveCategory(CategoryDTO categoryDTO) {
+        throwIfCategoryExistsByName(categoryDTO.getName());
 
         Category category = modelMapper.map(categoryDTO, Category.class);
         Category savedCategory = categoryRepository.save(category);
@@ -56,49 +45,57 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDTO updateCategory(CategoryDTO categoryDTO, long categoryID) {
-        if (!categoryRepository.existsById(categoryID))
-            throw new ResourceNotFoundException("Category", "id", categoryID);
+    public CategoryDTO updateCategory(CategoryDTO categoryDTO, Long categoryId) {
+        getCategoryOrThrowById(categoryId);
+        throwIfCategoryExistsByName(categoryDTO.getName());
 
-        if (categoryRepository.existsByName(categoryDTO.getName()))
-            throw new APIException(String.format("Category with the name '%s' already exists", categoryDTO.getName()));
-
-        categoryDTO.setId(categoryID);
         Category category = modelMapper.map(categoryDTO, Category.class);
+        category.setId(categoryId);
+
         Category savedCategory = categoryRepository.save(category);
 
         return modelMapper.map(savedCategory, CategoryDTO.class);
     }
 
     @Override
-    public CategoryDTO deleteCategory(long categoryID) {
-        Category category = categoryRepository.findById(categoryID)
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryID));
-
+    public CategoryDTO deleteCategory(Long categoryId) {
+        Category category = getCategoryOrThrowById(categoryId);
         categoryRepository.delete(category);
+
         return modelMapper.map(category, CategoryDTO.class);
     }
 
-    private Sort getSort(String sortBy, String sortOrder) {
-        return sortOrder.equalsIgnoreCase("asc")
-                ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
+    private void throwIfCategoryExistsByName(String name) {
+        if (categoryRepository.existsByNameIgnoreCase(name))
+            throw new APIException("Category", "name", name);
     }
 
-    private CategoryResponse getCategoryResponse(Page<Category> categoryPage, String sortBy, String sortOrder) {
-        List<CategoryDTO> categoryDTOs = categoryPage.stream()
-                .map(category -> modelMapper.map(category, CategoryDTO.class)).toList();
+    private Category getCategoryOrThrowById(Long categoryId) {
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
+    }
 
-        CategoryResponse categoryResponse = new CategoryResponse();
-        categoryResponse.setCategories(categoryDTOs);
-        categoryResponse.setPageNumber(categoryPage.getNumber());
-        categoryResponse.setPageSize(categoryPage.getSize());
-        categoryResponse.setSortBy(sortBy);
-        categoryResponse.setSortOrder(sortOrder);
-        categoryResponse.setTotalElements(categoryPage.getTotalElements());
-        categoryResponse.setTotalPages(categoryPage.getTotalPages());
-        categoryResponse.setLastPage(categoryPage.isLast());
+    private Sort buildSort(String sortBy, String sortOrder) {
+        return sortOrder.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+    }
 
-        return categoryResponse;
+    private CategoryResponse buildCategoryResponse(Page<Category> categoryPage, String sortBy, String sortOrder) {
+        List<CategoryDTO> categories = categoryPage.stream()
+                .map(category -> modelMapper.map(category, CategoryDTO.class))
+                .toList();
+
+        return CategoryResponse
+                .builder()
+                .categories(categories)
+                .pageNumber(categoryPage.getNumber())
+                .pageSize(categoryPage.getSize())
+                .sortBy(sortBy)
+                .sortOrder(sortOrder.equalsIgnoreCase("desc") ? "desc" : "asc")
+                .totalElements(categoryPage.getTotalElements())
+                .totalPages(categoryPage.getTotalPages())
+                .isLastPage(categoryPage.isLast())
+                .build();
     }
 }

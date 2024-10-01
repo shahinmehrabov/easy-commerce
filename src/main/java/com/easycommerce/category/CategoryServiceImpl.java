@@ -1,6 +1,6 @@
 package com.easycommerce.category;
 
-import com.easycommerce.exception.APIException;
+import com.easycommerce.exception.ResourceAlreadyExistsException;
 import com.easycommerce.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -67,7 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private void throwIfCategoryExistsByName(String name) {
         if (categoryRepository.existsByNameIgnoreCase(name))
-            throw new APIException("Category", "name", name);
+            throw new ResourceAlreadyExistsException("Category", "name", name);
     }
 
     private Category getCategoryOrThrowById(Long categoryId) {

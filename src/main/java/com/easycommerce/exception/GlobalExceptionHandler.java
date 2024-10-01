@@ -38,4 +38,10 @@ public class GlobalExceptionHandler {
         APIResponse apiResponse = new APIResponse(e.getMessage(), new Date());
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<APIResponse> resourceAlreadyExistsException(ResourceAlreadyExistsException e) {
+        APIResponse apiResponse = new APIResponse(e.getMessage(), new Date());
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
 }

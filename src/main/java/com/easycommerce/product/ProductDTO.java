@@ -1,31 +1,36 @@
 package com.easycommerce.product;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class ProductDTO {
-    private long id;
 
-    @NotBlank
-    @Size(min = 3, message = "Product name must contain at least 3 characters")
+    private Long id;
+
+    @NotBlank(message = "Name is required")
+    @Min(value = 3, message = "Name must contain at least 3 characters")
     private String name;
 
     @NotBlank
-    @Size(min = 5, message = "Product description must contain at least 5 characters")
+    @Min(value = 5, message = "Description must contain at least 5 characters")
     private String description;
-    private String image;
+    private String imageName;
+
+    @PositiveOrZero(message = "Quantity must be positive")
     private int quantity;
+
+    @PositiveOrZero(message = "Price must be positive")
     private double price;
+
+    @PositiveOrZero(message = "Discount must be positive")
     private double discount;
+
+    @PositiveOrZero(message = "Special price must be positive")
     private double specialPrice;
 
-    @NotNull(message = "Category can not be null")
-    private Long categoryID;
+    @NotNull(message = "Category is required")
+    private Long categoryId;
 }

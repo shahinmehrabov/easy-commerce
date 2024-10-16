@@ -3,41 +3,48 @@ package com.easycommerce.product;
 import com.easycommerce.category.Category;
 import com.easycommerce.user.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Table(name = "products")
+@NoArgsConstructor
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @NotBlank
-    @Size(min = 3, message = "Product name must contain at least 3 characters")
+    @Min(value = 3)
+    @Column(nullable = false)
     private String name;
 
-    @NotBlank
-    @Size(min = 5, message = "Product description must contain at least 5 characters")
+    @Min(value = 5)
+    @Column(nullable = false)
     private String description;
-    private String image;
+
+    @Column(nullable = false)
+    private String imageName;
+
+    @PositiveOrZero
     private int quantity;
+
+    @PositiveOrZero
     private double price;
+
+    @PositiveOrZero
     private double discount;
+
+    @PositiveOrZero
     private double specialPrice;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Category category;
 
     @ManyToOne
-    @JoinColumn(name = "seller_id")
+    @JoinColumn(nullable = false)
     private User user;
 
     public void setSpecialPrice() {

@@ -20,23 +20,23 @@ public class CategoryServiceImpl implements CategoryService {
     private final ModelMapper modelMapper;
 
     @Override
-    public CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+    public CategoryResponse getAllCategories(int pageNumber, int pageSize, String sortBy, String sortOrder) {
         Sort sort = buildSort(sortBy, sortOrder);
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-        Page<Category> categoryPage = categoryRepository.findAll(pageable);
+        Page<Category> page = categoryRepository.findAll(pageable);
 
-        return buildCategoryResponse(categoryPage, sortBy, sortOrder);
+        return getCategoryResponse(page, sortBy, sortOrder);
     }
 
     @Override
-    public CategoryDTO getCategoryById(Long categoryId) {
-        Category category = getCategoryOrThrowById(categoryId);
+    public CategoryDTO getCategoryById(Long id) {
+        Category category = findCategoryById(id);
         return modelMapper.map(category, CategoryDTO.class);
     }
 
     @Override
-    public CategoryDTO saveCategory(CategoryDTO categoryDTO) {
-        throwIfCategoryExistsByName(categoryDTO.getName());
+    public CategoryDTO addCategory(CategoryDTO categoryDTO) {
+        existsByName(categoryDTO.getName());
 
         Category category = modelMapper.map(categoryDTO, Category.class);
         Category savedCategory = categoryRepository.save(category);
@@ -45,34 +45,30 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDTO updateCategory(CategoryDTO categoryDTO, Long categoryId) {
-        getCategoryOrThrowById(categoryId);
-        throwIfCategoryExistsByName(categoryDTO.getName());
+    public CategoryDTO updateCategoryById(Long id, CategoryDTO categoryDTO) {
+        existsByName(categoryDTO.getName());
 
-        Category category = modelMapper.map(categoryDTO, Category.class);
-        category.setId(categoryId);
+        Category currentCategory = findCategoryById(id);
+        currentCategory.setName(categoryDTO.getName());
 
-        Category savedCategory = categoryRepository.save(category);
-
+        Category savedCategory = categoryRepository.save(currentCategory);
         return modelMapper.map(savedCategory, CategoryDTO.class);
     }
 
     @Override
-    public CategoryDTO deleteCategory(Long categoryId) {
-        Category category = getCategoryOrThrowById(categoryId);
+    public void deleteCategoryById(Long id) {
+        Category category = findCategoryById(id);
         categoryRepository.delete(category);
-
-        return modelMapper.map(category, CategoryDTO.class);
     }
 
-    private void throwIfCategoryExistsByName(String name) {
+    private void existsByName(String name) {
         if (categoryRepository.existsByNameIgnoreCase(name))
             throw new ResourceAlreadyExistsException("Category", "name", name);
     }
 
-    private Category getCategoryOrThrowById(Long categoryId) {
-        return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
+    private Category findCategoryById(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
     }
 
     private Sort buildSort(String sortBy, String sortOrder) {
@@ -81,21 +77,20 @@ public class CategoryServiceImpl implements CategoryService {
                 : Sort.by(sortBy).ascending();
     }
 
-    private CategoryResponse buildCategoryResponse(Page<Category> categoryPage, String sortBy, String sortOrder) {
-        List<CategoryDTO> categories = categoryPage.stream()
+    private CategoryResponse getCategoryResponse(Page<Category> page, String sortBy, String sortOrder) {
+        List<CategoryDTO> categories = page.stream()
                 .map(category -> modelMapper.map(category, CategoryDTO.class))
                 .toList();
 
-        return CategoryResponse
-                .builder()
+        return CategoryResponse.builder()
                 .categories(categories)
-                .pageNumber(categoryPage.getNumber())
-                .pageSize(categoryPage.getSize())
+                .pageNumber(page.getNumber())
+                .pageSize(page.getSize())
                 .sortBy(sortBy)
                 .sortOrder(sortOrder.equalsIgnoreCase("desc") ? "desc" : "asc")
-                .totalElements(categoryPage.getTotalElements())
-                .totalPages(categoryPage.getTotalPages())
-                .isLastPage(categoryPage.isLast())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .isLastPage(page.isLast())
                 .build();
     }
 }

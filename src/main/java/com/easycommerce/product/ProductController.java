@@ -76,28 +76,28 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
-        ProductDTO product = productService.getProductById(id);
-        return new ResponseEntity<>(product, HttpStatus.OK);
+        ProductDTO productDTO = productService.getProductById(id);
+        return new ResponseEntity<>(productDTO, HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<ProductDTO> addProduct(@Valid @RequestBody ProductDTO productDTO) {
-        ProductDTO savedProduct = productService.addProduct(productDTO);
-        return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+        ProductDTO savedProductDTO = productService.addProduct(productDTO);
+        return new ResponseEntity<>(savedProductDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductDTO> updateProductById(@PathVariable Long id, @Valid @RequestBody ProductDTO productDTO) {
-        ProductDTO updatedProduct = productService.updateProductById(id, productDTO);
-        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+        ProductDTO updatedProductDTO = productService.updateProductById(id, productDTO);
+        return new ResponseEntity<>(updatedProductDTO, HttpStatus.OK);
     }
 
     @PutMapping("/{id}/image")
     public ResponseEntity<ProductDTO> updateProductImageById(@PathVariable Long id,
                                                              @RequestParam("image") MultipartFile image) throws IOException {
 
-        ProductDTO updatedProduct = productService.updateProductImageById(id, image);
-        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+        ProductDTO updatedProductDTO = productService.updateProductImageById(id, image);
+        return new ResponseEntity<>(updatedProductDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

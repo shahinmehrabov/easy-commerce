@@ -1,9 +1,9 @@
 package com.easycommerce.category;
 
 public interface CategoryService {
-    CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
-    CategoryDTO getCategoryById(Long categoryId);
-    CategoryDTO saveCategory(CategoryDTO categoryDTO);
-    CategoryDTO updateCategory(CategoryDTO categoryDTO, Long categoryId);
-    CategoryDTO deleteCategory(Long categoryId);
+    CategoryResponse getAllCategories(int pageNumber, int pageSize, String sortBy, String sortOrder);
+    CategoryDTO getCategoryById(Long id);
+    CategoryDTO addCategory(CategoryDTO categoryDTO);
+    CategoryDTO updateCategoryById(Long id, CategoryDTO categoryDTO);
+    void deleteCategoryById(Long id);
 }

@@ -12,12 +12,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CategoryResponse {
+
     private List<CategoryDTO> categories;
-    private Integer pageNumber;
-    private Integer pageSize;
+    private int pageNumber;
+    private int pageSize;
     private String sortBy;
     private String sortOrder;
-    private Long totalElements;
-    private Integer totalPages;
-    private Boolean isLastPage;
+    private long totalElements;
+    private int totalPages;
+    private boolean isLastPage;
 }

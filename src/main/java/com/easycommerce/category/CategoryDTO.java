@@ -11,7 +11,7 @@ public class CategoryDTO {
 
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "Name is required")
     @Size(min = 3, message = "Category name must contain at least 3 characters")
     private String name;
 }

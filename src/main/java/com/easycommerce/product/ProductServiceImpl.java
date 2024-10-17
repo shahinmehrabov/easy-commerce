@@ -97,13 +97,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO updateProductById(Long id, ProductDTO productDTO) {
         Product currentProduct = findProductById(id);
-        Product updatedProduct = modelMapper.map(productDTO, Product.class);
 
-        currentProduct.setName(updatedProduct.getName());
-        currentProduct.setDescription(updatedProduct.getDescription());
-        currentProduct.setQuantity(updatedProduct.getQuantity());
-        currentProduct.setDiscount(updatedProduct.getDiscount());
-        currentProduct.setPrice(updatedProduct.getPrice());
+        currentProduct.setName(productDTO.getName());
+        currentProduct.setDescription(productDTO.getDescription());
+        currentProduct.setQuantity(productDTO.getQuantity());
+        currentProduct.setDiscount(productDTO.getDiscount());
+        currentProduct.setPrice(productDTO.getPrice());
         currentProduct.setPriceAfterDiscount();
 
         Product savedProduct = productRepository.save(currentProduct);
@@ -150,7 +149,8 @@ public class ProductServiceImpl implements ProductService {
 
     private ProductResponse getProductResponse(Page<Product> page, String sortBy, String sortOrder) {
         List<ProductDTO> products = page.stream().map(
-                product -> modelMapper.map(product, ProductDTO.class)).toList();
+                product -> modelMapper.map(product, ProductDTO.class))
+                .toList();
 
         return ProductResponse.builder()
                 .products(products)

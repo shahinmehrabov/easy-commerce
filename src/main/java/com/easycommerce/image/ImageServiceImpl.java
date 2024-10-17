@@ -1,5 +1,6 @@
 package com.easycommerce.image;
 
+import com.easycommerce.exception.APIException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,9 +15,15 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public String uploadImage(String path, MultipartFile image) throws IOException {
+        if (image == null || image.isEmpty())
+            throw new APIException("Image is required");
+
         String originalImageName = image.getOriginalFilename();
-        String randomId = UUID.randomUUID().toString();
-        String imageName = randomId.concat(originalImageName.substring(originalImageName.lastIndexOf('.')));
+        String imageName = UUID.randomUUID().toString();
+
+        if (originalImageName != null && originalImageName.contains("."))
+            imageName += originalImageName.substring(originalImageName.lastIndexOf('.'));
+
         String imagePath = path + File.pathSeparator + imageName;
 
         File folder = new File(path);

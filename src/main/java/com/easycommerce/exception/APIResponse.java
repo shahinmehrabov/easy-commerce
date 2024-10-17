@@ -10,6 +10,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class APIResponse {
+
     private String message;
     private Date timeStamp;
 }

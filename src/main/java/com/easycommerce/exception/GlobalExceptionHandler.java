@@ -24,6 +24,7 @@ public class GlobalExceptionHandler {
                     response.put(fieldName, message);
                 }
         );
+
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 

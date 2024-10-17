@@ -16,11 +16,11 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Min(value = 3)
+    @Size(min = 3)
     @Column(nullable = false)
     private String name;
 
-    @Min(value = 5)
+    @Size(min = 5)
     @Column(nullable = false)
     private String description;
 
@@ -35,9 +35,7 @@ public class Product {
 
     @PositiveOrZero
     private double discount;
-
-    @PositiveOrZero
-    private double specialPrice;
+    private double priceAfterDiscount;
 
     @ManyToOne
     @JoinColumn(nullable = false)
@@ -47,7 +45,7 @@ public class Product {
     @JoinColumn(nullable = false)
     private User user;
 
-    public void setSpecialPrice() {
-        specialPrice = price * (discount * 0.01);
+    public void setPriceAfterDiscount() {
+        priceAfterDiscount = price - (price * (discount * 0.01));
     }
 }

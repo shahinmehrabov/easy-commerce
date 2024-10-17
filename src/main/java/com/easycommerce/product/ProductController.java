@@ -1,6 +1,7 @@
 package com.easycommerce.product;
 
 import com.easycommerce.config.AppConstants;
+import com.easycommerce.exception.APIResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/api/products")
@@ -99,8 +101,10 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ProductDTO> deleteProductById(@PathVariable Long id) {
-        ProductDTO productDTO = productService.deleteProductById(id);
-        return new ResponseEntity<>(productDTO, HttpStatus.OK);
+    public ResponseEntity<APIResponse> deleteProductById(@PathVariable Long id) {
+        productService.deleteProductById(id);
+
+        APIResponse response = new APIResponse("Successfully deleted product with id: " + id, new Date());
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

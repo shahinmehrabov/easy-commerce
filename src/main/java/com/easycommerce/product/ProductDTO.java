@@ -11,11 +11,11 @@ public class ProductDTO {
     private Long id;
 
     @NotBlank(message = "Name is required")
-    @Min(value = 3, message = "Name must contain at least 3 characters")
+    @Size(min = 3, message = "Name must contain at least 3 characters")
     private String name;
 
-    @NotBlank
-    @Min(value = 5, message = "Description must contain at least 5 characters")
+    @NotBlank(message = "Description is required")
+    @Size(min = 5, message = "Description must contain at least 5 characters")
     private String description;
     private String imageName;
 
@@ -27,9 +27,7 @@ public class ProductDTO {
 
     @PositiveOrZero(message = "Discount must be positive")
     private double discount;
-
-    @PositiveOrZero(message = "Special price must be positive")
-    private double specialPrice;
+    private double priceAfterDiscount;
 
     @NotNull(message = "Category is required")
     private Long categoryId;

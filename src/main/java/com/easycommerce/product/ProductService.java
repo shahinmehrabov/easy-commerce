@@ -13,6 +13,6 @@ public interface ProductService {
     ProductDTO getProductById(Long id);
     ProductDTO addProduct(ProductDTO productDTO);
     ProductDTO updateProductById(Long id, ProductDTO productDTO);
-    ProductDTO deleteProductById(Long id);
+    void deleteProductById(Long id);
     ProductDTO updateProductImageById(Long id, MultipartFile image) throws IOException;
 }

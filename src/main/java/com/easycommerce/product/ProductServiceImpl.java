@@ -86,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
         User user = authUtil.loggedInUser();
 
         product.setUser(user);
-        product.setSpecialPrice();
+        product.setPriceAfterDiscount();
         product.setImageName(defaultImageName);
         product.setCategory(category);
 
@@ -104,18 +104,16 @@ public class ProductServiceImpl implements ProductService {
         currentProduct.setQuantity(updatedProduct.getQuantity());
         currentProduct.setDiscount(updatedProduct.getDiscount());
         currentProduct.setPrice(updatedProduct.getPrice());
-        currentProduct.setSpecialPrice();
+        currentProduct.setPriceAfterDiscount();
 
         Product savedProduct = productRepository.save(currentProduct);
         return modelMapper.map(savedProduct, ProductDTO.class);
     }
 
     @Override
-    public ProductDTO deleteProductById(Long id) {
+    public void deleteProductById(Long id) {
         Product product = findProductById(id);
         productRepository.delete(product);
-
-        return modelMapper.map(product, ProductDTO.class);
     }
 
     @Override

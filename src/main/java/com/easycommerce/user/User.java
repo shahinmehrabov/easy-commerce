@@ -14,11 +14,13 @@ import java.time.LocalDate;
 import java.util.Set;
 
 @Data
+@Entity
 @NoArgsConstructor
-@Entity(name = "users")
+@Table(name = "users")
 public class User {
 
     @Id
+    @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/api/products")
 @RequiredArgsConstructor
+@RequestMapping("/api/products")
 public class ProductController {
 
     private final ProductService productService;

@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/api/categories")
 @RequiredArgsConstructor
+@RequestMapping("/api/categories")
 public class CategoryController {
 
     private final CategoryService categoryService;

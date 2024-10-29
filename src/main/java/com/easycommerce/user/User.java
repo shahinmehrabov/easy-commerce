@@ -10,7 +10,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -47,9 +46,6 @@ public class User {
 
     @Column(nullable = false)
     private String phoneNumber;
-
-    @Column(nullable = false)
-    private LocalDate birthDate;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",

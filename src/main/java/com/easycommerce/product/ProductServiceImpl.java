@@ -1,11 +1,11 @@
 package com.easycommerce.product;
 
-import com.easycommerce.auth.util.AuthUtil;
 import com.easycommerce.category.Category;
 import com.easycommerce.category.CategoryRepository;
 import com.easycommerce.exception.ResourceNotFoundException;
 import com.easycommerce.image.ImageService;
 import com.easycommerce.user.User;
+import com.easycommerce.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +27,7 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
     private final ImageService imageService;
-    private final AuthUtil authUtil;
+    private final UserService userService;
 
     @Value("${product.image.path}")
     private String imagePath;
@@ -83,7 +83,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO addProduct(ProductDTO productDTO) {
         Category category = findCategoryById(productDTO.getCategoryId());
         Product product = modelMapper.map(productDTO, Product.class);
-        User user = authUtil.loggedInUser();
+        User user = userService.getLoggedInUser();
 
         product.setUser(user);
         product.setPriceAfterDiscount();

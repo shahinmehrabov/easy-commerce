@@ -1,8 +1,8 @@
 package com.easycommerce.user.address;
 
-import com.easycommerce.auth.util.AuthUtil;
 import com.easycommerce.exception.ResourceNotFoundException;
 import com.easycommerce.user.User;
+import com.easycommerce.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -15,13 +15,13 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class AddressServiceImpl implements AddressService {
 
-    private final AuthUtil authUtil;
     private final ModelMapper modelMapper;
     private final AddressRepository addressRepository;
+    private final UserService userService;
 
     @Override
     public List<AddressDTO> getUserAddresses() {
-        User user = authUtil.loggedInUser();
+        User user = userService.getLoggedInUser();
         Set<Address> addresses = user.getAddresses();
 
         return addresses.stream()
@@ -42,7 +42,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public AddressDTO addAddress(AddressDTO addressDTO) {
         Address address = modelMapper.map(addressDTO, Address.class);
-        User user = authUtil.loggedInUser();
+        User user = userService.getLoggedInUser();
 
         address.setUser(user);
 
@@ -72,7 +72,7 @@ public class AddressServiceImpl implements AddressService {
     }
 
     private Address findUserAddressById(Long id) {
-        User user = authUtil.loggedInUser();
+        User user = userService.getLoggedInUser();
 
         return addressRepository.findByIdAndUser(id, user)
                 .orElseThrow(() -> new ResourceNotFoundException("Address not found"));

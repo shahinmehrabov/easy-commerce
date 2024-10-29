@@ -3,12 +3,10 @@ package com.easycommerce.user;
 import com.easycommerce.user.role.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -35,9 +33,6 @@ public class UserDTO {
 
     @NotBlank(message = "Phone number is required")
     private String phoneNumber;
-
-    @NotNull(message = "Birth date is required")
-    private LocalDate birthDate;
 
     private Set<Role> roles;
 }

@@ -8,6 +8,9 @@ import com.easycommerce.user.role.RoleName;
 import com.easycommerce.user.role.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +43,15 @@ public class UserServiceImpl implements UserService {
 
         User savedUser = userRepository.save(user);
         return modelMapper.map(savedUser, UserDTO.class);
+    }
+
+    @Override
+    public User getLoggedInUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        return userRepository.findByUsername(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + email));
     }
 
     @Override

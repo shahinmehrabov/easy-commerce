@@ -4,6 +4,8 @@ import com.easycommerce.config.AppConstants;
 import com.easycommerce.exception.APIException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -79,6 +81,7 @@ public class JwtTokenProvider {
     }
 
     private SecretKey getSecretKey() {
-        return Jwts.SIG.HS256.key().build();
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }

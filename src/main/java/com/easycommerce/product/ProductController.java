@@ -32,7 +32,7 @@ public class ProductController {
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/categories/id/{categoryId}")
+    @GetMapping("/category/id/{categoryId}")
     public ResponseEntity<ProductResponse> getProductsByCategoryId(
             @PathVariable Long categoryId,
             @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER) int pageNumber,
@@ -46,7 +46,7 @@ public class ProductController {
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/categories/name/{categoryName}")
+    @GetMapping("/category/name/{categoryName}")
     public ResponseEntity<ProductResponse> getProductsByCategoryName(
             @PathVariable String categoryName,
             @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER) int pageNumber,

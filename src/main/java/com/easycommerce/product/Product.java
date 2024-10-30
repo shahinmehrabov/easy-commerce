@@ -45,7 +45,17 @@ public class Product {
     @JoinColumn(nullable = false)
     private User user;
 
+    public void setPrice(double price) {
+        this.price = price;
+        this.price = roundDouble(this.price);
+    }
+
     public void setPriceAfterDiscount() {
         priceAfterDiscount = price - (price * (discount * 0.01));
+        priceAfterDiscount = roundDouble(priceAfterDiscount);
+    }
+
+    private double roundDouble(double value) {
+        return (double) Math.round(value * 100) / 100;
     }
 }

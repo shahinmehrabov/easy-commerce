@@ -31,9 +31,9 @@ public class CartItem {
     @JoinColumn(nullable = false)
     private Product product;
 
-    public void setTotalPrice(double totalPrice) {
-        this.totalPrice = totalPrice * quantity;
-        this.totalPrice = roundDouble(this.totalPrice);
+    public void setTotalPrice() {
+        totalPrice = product.getPriceAfterDiscount() * quantity;
+        totalPrice = roundDouble(totalPrice);
     }
 
     private double roundDouble(double value) {

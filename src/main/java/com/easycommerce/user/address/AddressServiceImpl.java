@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +21,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public List<AddressDTO> getUserAddresses() {
         User user = userService.getLoggedInUser();
-        Set<Address> addresses = user.getAddresses();
+        List<Address> addresses = user.getAddresses();
 
         return addresses.stream()
                 .map(address -> modelMapper.map(address, AddressDTO.class))

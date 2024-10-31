@@ -1,5 +1,6 @@
 package com.easycommerce.user;
 
+import com.easycommerce.cart.Cart;
 import com.easycommerce.product.Product;
 import com.easycommerce.user.address.Address;
 import com.easycommerce.user.role.Role;
@@ -9,7 +10,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -56,10 +59,14 @@ public class User {
     @OneToMany(mappedBy = "user",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             orphanRemoval = true)
-    private Set<Product> products;
+    private List<Product> products;
 
     @OneToMany(mappedBy = "user",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             orphanRemoval = true)
-    private Set<Address> addresses;
+    private List<Address> addresses;
+
+    @ToString.Exclude
+    @OneToOne(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private Cart cart;
 }

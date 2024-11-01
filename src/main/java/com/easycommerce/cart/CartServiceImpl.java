@@ -59,14 +59,12 @@ public class CartServiceImpl implements CartService {
         cartItem.setCart(cart);
         cartItem.setQuantity(quantity);
         cartItem.setDiscount(product.getDiscount());
-        cartItem.setTotalPrice();
-        cartItemRepository.save(cartItem);
+        cartItem.setTotalAmount();
+        CartItem savedCartItem = cartItemRepository.save(cartItem);
 
+        cart.getCartItems().add(savedCartItem);
         cart.setTotalPrice(cart.getTotalPrice() + (product.getPriceAfterDiscount() * quantity));
         cartRepository.save(cart);
-
-        product.setQuantity(product.getQuantity() - quantity);
-        productRepository.save(product);
 
         return getCart();
     }
@@ -89,12 +87,12 @@ public class CartServiceImpl implements CartService {
             if (cartItemRepository.existsByCartAndProduct(cart, product))
                 deleteProductFromCart(productId);
         } else {
-            cart.setTotalPrice(cart.getTotalPrice() - cartItem.getTotalPrice());
+            cart.setTotalPrice(cart.getTotalPrice() - cartItem.getTotalAmount());
             cartItem.setQuantity(cartItem.getQuantity() + quantity);
-            cartItem.setTotalPrice();
+            cartItem.setTotalAmount();
             cartItem.setDiscount(product.getDiscount());
 
-            cart.setTotalPrice(cart.getTotalPrice() + cartItem.getTotalPrice());
+            cart.setTotalPrice(cart.getTotalPrice() + cartItem.getTotalAmount());
             cartRepository.save(cart);
         }
 
@@ -118,7 +116,8 @@ public class CartServiceImpl implements CartService {
         CartItem cartItem = findCartItemByProductAndCart(product, cart);
 
         cartItemRepository.delete(cartItem);
-        cart.setTotalPrice(cart.getTotalPrice() - cartItem.getTotalPrice());
+        cart.setTotalPrice(cart.getTotalPrice() - cartItem.getTotalAmount());
+        cartRepository.save(cart);
     }
 
     private Cart getOrCreateCart() {

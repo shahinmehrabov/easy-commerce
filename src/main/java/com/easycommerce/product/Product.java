@@ -35,6 +35,8 @@ public class Product {
 
     @PositiveOrZero
     private double discount;
+
+    @PositiveOrZero
     private double priceAfterDiscount;
 
     @ManyToOne

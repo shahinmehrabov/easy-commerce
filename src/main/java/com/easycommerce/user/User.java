@@ -1,6 +1,7 @@
 package com.easycommerce.user;
 
 import com.easycommerce.cart.Cart;
+import com.easycommerce.order.Order;
 import com.easycommerce.product.Product;
 import com.easycommerce.user.address.Address;
 import com.easycommerce.user.role.Role;
@@ -65,6 +66,11 @@ public class User {
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             orphanRemoval = true)
     private List<Address> addresses;
+
+    @OneToMany(mappedBy = "user",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+            orphanRemoval = true)
+    private List<Order> orders;
 
     @ToString.Exclude
     @OneToOne(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)

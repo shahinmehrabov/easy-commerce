@@ -1,6 +1,6 @@
-package com.easycommerce.cart.cartitem;
+package com.easycommerce.order.orderitem;
 
-import com.easycommerce.cart.Cart;
+import com.easycommerce.order.Order;
 import com.easycommerce.product.Product;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -10,30 +10,32 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
-public class CartItem {
+public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @PositiveOrZero
     private int quantity;
 
     @PositiveOrZero
     private double discount;
 
     @PositiveOrZero
-    private double totalAmount;
-
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Cart cart;
+    private double orderPrice;
 
     @ManyToOne
     @JoinColumn(nullable = false)
     private Product product;
 
-    public void setTotalAmount() {
-        totalAmount = product.getPriceAfterDiscount() * quantity;
-        totalAmount = roundDouble(totalAmount);
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Order order;
+
+    public void setOrderPrice() {
+        orderPrice = product.getPriceAfterDiscount() * quantity;
+        orderPrice = roundDouble(orderPrice);
     }
 
     private double roundDouble(double value) {

@@ -14,7 +14,7 @@ public class AddressDTO {
     private Long id;
 
     @NotBlank(message = "Street is required")
-    @Size(min = 5, message = "Street must have at least 5 characters")
+    @Size(min = 3, message = "Street must have at least 3 characters")
     private String street;
 
     @NotBlank(message = "Building is required")

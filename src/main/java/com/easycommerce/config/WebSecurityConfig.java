@@ -1,4 +1,4 @@
-package com.easycommerce.auth;
+package com.easycommerce.config;
 
 import com.easycommerce.auth.jwt.JwtAuthEntryPoint;
 import com.easycommerce.auth.jwt.JwtTokenFilter;
@@ -40,7 +40,7 @@ public class WebSecurityConfig {
         http.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         http.authorizeHttpRequests(auth ->
                 auth.requestMatchers("/api/auth/login").permitAll()
-                        .requestMatchers("/api/auth/signup").permitAll()
+                        .requestMatchers("/api/auth/register").permitAll()
                         .requestMatchers("/images/**").permitAll()
                         .anyRequest().authenticated());
 

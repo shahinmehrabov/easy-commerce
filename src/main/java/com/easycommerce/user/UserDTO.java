@@ -1,13 +1,10 @@
 package com.easycommerce.user;
 
-import com.easycommerce.user.role.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -33,6 +30,4 @@ public class UserDTO {
 
     @NotBlank(message = "Phone number is required")
     private String phoneNumber;
-
-    private Set<Role> roles;
 }

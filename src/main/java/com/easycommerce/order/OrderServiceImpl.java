@@ -57,11 +57,11 @@ public class OrderServiceImpl implements OrderService{
                 .stream()
                 .map(item -> {
                     OrderItem orderItem = new OrderItem();
-                    orderItem.setQuantity(item.getQuantity());
+                    orderItem.setProductQuantity(item.getQuantity());
                     orderItem.setDiscount(item.getDiscount());
                     orderItem.setProduct(item.getProduct());
                     orderItem.setOrder(savedOrder);
-                    orderItem.setOrderPrice();
+                    orderItem.setTotalPrice(item.getTotalAmount());
                     return orderItem;
                 })
                 .toList();

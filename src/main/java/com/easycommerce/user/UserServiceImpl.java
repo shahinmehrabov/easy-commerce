@@ -1,6 +1,10 @@
 package com.easycommerce.user;
 
-import com.easycommerce.auth.SignUpRequest;
+import com.easycommerce.auth.JwtDTO;
+import com.easycommerce.auth.LoginDTO;
+import com.easycommerce.auth.RegisterDTO;
+import com.easycommerce.auth.jwt.JwtTokenProvider;
+import com.easycommerce.exception.APIException;
 import com.easycommerce.exception.ResourceAlreadyExistsException;
 import com.easycommerce.exception.ResourceNotFoundException;
 import com.easycommerce.user.role.Role;
@@ -8,7 +12,10 @@ import com.easycommerce.user.role.RoleName;
 import com.easycommerce.user.role.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,20 +27,35 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final ModelMapper modelMapper;
 
     @Override
-    public UserDTO addUser(SignUpRequest signUpRequest) {
-        if (existsByUsername(signUpRequest.getUsername()))
-            throw new ResourceAlreadyExistsException("User", "username", signUpRequest.getUsername());
+    public JwtDTO login(LoginDTO loginDTO) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
+            String jwtToken = jwtTokenProvider.generateToken(loginDTO.getUsername());
 
-        if (existsByEmail(signUpRequest.getEmail()))
-            throw new ResourceAlreadyExistsException("User", "email", signUpRequest.getEmail());
+            return new JwtDTO(jwtToken, jwtTokenProvider.getExpirationInMs());
+        } catch (AuthenticationException e) {
+            throw new APIException("Bad credentials");
+        }
+    }
 
-        User user = modelMapper.map(signUpRequest, User.class);
+    @Override
+    public UserDTO addUser(RegisterDTO registerDTO) {
+        if (existsByUsername(registerDTO.getUsername()))
+            throw new ResourceAlreadyExistsException("User", "username", registerDTO.getUsername());
+
+        if (existsByEmail(registerDTO.getEmail()))
+            throw new ResourceAlreadyExistsException("User", "email", registerDTO.getEmail());
+
+        User user = modelMapper.map(registerDTO, User.class);
         Role role = roleRepository.findByName(RoleName.ROLE_USER)
                 .orElseThrow(() -> new ResourceNotFoundException("Role", "name", String.valueOf(RoleName.ROLE_USER)));
         Set<Role> roles = Set.of(role);

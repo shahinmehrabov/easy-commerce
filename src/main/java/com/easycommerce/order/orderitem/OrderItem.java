@@ -2,6 +2,7 @@ package com.easycommerce.order.orderitem;
 
 import com.easycommerce.order.Order;
 import com.easycommerce.product.Product;
+import com.easycommerce.util.NumberUtil;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
@@ -17,28 +18,21 @@ public class OrderItem {
     private Long id;
 
     @PositiveOrZero
-    private long quantity;
+    private long productQuantity;
 
     @PositiveOrZero
     private double discount;
 
     @PositiveOrZero
-    private double orderPrice;
+    private double totalPrice;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
     private Product product;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
     private Order order;
 
-    public void setOrderPrice() {
-        orderPrice = product.getPriceAfterDiscount() * quantity;
-        orderPrice = roundDouble(orderPrice);
-    }
-
-    private double roundDouble(double value) {
-        return (double) Math.round(value * 100) / 100;
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = NumberUtil.roundPrice(totalPrice);
     }
 }

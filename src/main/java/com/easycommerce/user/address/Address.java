@@ -15,17 +15,16 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min = 5)
+    @Size(min = 3)
     @Column(nullable = false)
     private String street;
 
     @Column(nullable = false)
-    private String building;
+    private String buildingNumber;
 
     @Size(min = 3)
     @Column(nullable = false)
     private String city;
-    private String state;
 
     @Size(min = 2)
     @Column(nullable = false)
@@ -33,9 +32,8 @@ public class Address {
 
     @Size(min = 3)
     @Column(nullable = false)
-    private String zip;
+    private String postalCode;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
     private User user;
 }

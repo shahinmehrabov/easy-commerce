@@ -11,19 +11,16 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.util.List;
 import java.util.Set;
 
 @Data
-@Entity
 @NoArgsConstructor
-@Table(name = "users")
+@Entity(name = "users")
 public class User {
 
     @Id
-    @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -40,14 +37,15 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Size(max = 50)
+    @Size(max = 30)
     @Column(nullable = false)
     private String firstName;
 
-    @Size(max = 50)
+    @Size(max = 30)
     @Column(nullable = false)
     private String lastName;
 
+    @Size(min = 9)
     @Column(nullable = false)
     private String phoneNumber;
 
@@ -60,19 +58,20 @@ public class User {
     @OneToMany(mappedBy = "user",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             orphanRemoval = true)
-    private List<Product> products;
+    private List<Address> addresses;
 
     @OneToMany(mappedBy = "user",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             orphanRemoval = true)
-    private List<Address> addresses;
+    private List<Product> products;
 
     @OneToMany(mappedBy = "user",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             orphanRemoval = true)
     private List<Order> orders;
 
-    @ToString.Exclude
-    @OneToOne(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToOne(mappedBy = "user",
+            cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+            orphanRemoval = true)
     private Cart cart;
 }

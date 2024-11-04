@@ -1,7 +1,5 @@
 package com.easycommerce.auth;
 
-import com.easycommerce.auth.login.LoginRequest;
-import com.easycommerce.auth.login.LoginResponse;
 import com.easycommerce.user.UserDTO;
 import com.easycommerce.user.UserService;
 import jakarta.validation.Valid;
@@ -18,18 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthService authService;
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
-        LoginResponse loginResponse = authService.login(loginRequest);
-        return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+    public ResponseEntity<JwtDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
+        JwtDTO jwtDTO = userService.login(loginDTO);
+        return new ResponseEntity<>(jwtDTO, HttpStatus.OK);
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<UserDTO> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
-        UserDTO savedUserDTO = userService.addUser(signUpRequest);
+    @PostMapping("/register")
+    public ResponseEntity<UserDTO> register(@Valid @RequestBody RegisterDTO registerDTO) {
+        UserDTO savedUserDTO = userService.addUser(registerDTO);
         return new ResponseEntity<>(savedUserDTO, HttpStatus.CREATED);
     }
 }

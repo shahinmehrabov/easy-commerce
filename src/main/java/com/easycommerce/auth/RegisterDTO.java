@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class SignUpRequest {
+public class RegisterDTO {
 
     @NotBlank(message = "Username is required")
     @Size(min = 4, max = 20, message = "Username length must be between 4 and 20 characters")
@@ -23,11 +23,11 @@ public class SignUpRequest {
     private String password;
 
     @NotBlank(message = "First name is required")
-    @Size(max = 50, message = "First name can not have more than 50 characters")
+    @Size(max = 30, message = "First name can not have more than 30 characters")
     private String firstName;
 
     @NotBlank(message = "Last name is required")
-    @Size(max = 50, message = "Last name can not have more than 50 characters")
+    @Size(max = 30, message = "Last name can not have more than 30 characters")
     private String lastName;
 
     @NotBlank(message = "Phone number is required")

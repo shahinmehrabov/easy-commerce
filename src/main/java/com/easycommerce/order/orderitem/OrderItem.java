@@ -17,7 +17,7 @@ public class OrderItem {
     private Long id;
 
     @PositiveOrZero
-    private int quantity;
+    private long quantity;
 
     @PositiveOrZero
     private double discount;

@@ -33,6 +33,6 @@ public class OrderItem {
     private Order order;
 
     public void setTotalPrice(double totalPrice) {
-        this.totalPrice = NumberUtil.roundPrice(totalPrice);
+        this.totalPrice = NumberUtil.roundNumber(totalPrice);
     }
 }

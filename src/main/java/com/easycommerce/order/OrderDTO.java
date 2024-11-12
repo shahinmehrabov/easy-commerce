@@ -16,7 +16,7 @@ public class OrderDTO {
     private boolean isPaid;
 
     @PositiveOrZero
-    private double totalAmount;
+    private double totalPrice;
 
     private LocalDateTime orderDate;
     private List<OrderItemDTO> orderItems;

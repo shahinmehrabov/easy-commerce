@@ -18,18 +18,17 @@ public class AddressDTO {
     private String street;
 
     @NotBlank(message = "Building is required")
-    private String building;
+    private String buildingNumber;
 
     @NotBlank(message = "City is required")
     @Size(min = 3, message = "City name must have at least 3 characters")
     private String city;
-    private String state;
 
     @NotBlank(message = "Country is required")
     @Size(min = 2, message = "Country must have at least 2 characters")
     private String country;
 
-    @NotBlank(message = "Zip is required")
-    @Size(min = 3, message = "Zip must have at least 3 characters")
-    private String zip;
+    @NotBlank(message = "Postal code is required")
+    @Size(min = 3, message = "Postal code must have at least 3 characters")
+    private String postalCode;
 }

@@ -54,11 +54,10 @@ public class AddressServiceImpl implements AddressService {
         Address address = findUserAddressById(id);
 
         address.setStreet(addressDTO.getStreet());
-        address.setBuilding(addressDTO.getBuilding());
+        address.setBuildingNumber(addressDTO.getBuildingNumber());
         address.setCity(addressDTO.getCity());
-        address.setState(addressDTO.getState());
         address.setCountry(addressDTO.getCountry());
-        address.setZip(addressDTO.getZip());
+        address.setPostalCode(addressDTO.getPostalCode());
 
         Address savedAddress = addressRepository.save(address);
         return modelMapper.map(savedAddress, AddressDTO.class);

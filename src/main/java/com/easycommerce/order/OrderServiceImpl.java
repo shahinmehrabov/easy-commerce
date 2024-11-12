@@ -40,13 +40,12 @@ public class OrderServiceImpl implements OrderService{
         Address address = addressRepository.findById(addressId)
                 .orElseThrow(() -> new ResourceNotFoundException("Address", "id", addressId));
 
-        Order order = Order
-                .builder()
-                .totalAmount(cart.getTotalPrice())
-                .orderDate(LocalDateTime.now())
-                .user(user)
-                .address(address)
-                .build();
+        Order order = new Order();
+        order.setTotalPrice(cart.getTotalPrice());
+        order.setOrderDate(LocalDateTime.now());
+        order.setUser(user);
+        order.setAddress(address);
+
         Order savedOrder = orderRepository.save(order);
         List<CartItem> cartItems = cart.getCartItems();
 
@@ -57,11 +56,11 @@ public class OrderServiceImpl implements OrderService{
                 .stream()
                 .map(item -> {
                     OrderItem orderItem = new OrderItem();
-                    orderItem.setProductQuantity(item.getQuantity());
+                    orderItem.setProductQuantity(item.getProductQuantity());
                     orderItem.setDiscount(item.getDiscount());
                     orderItem.setProduct(item.getProduct());
                     orderItem.setOrder(savedOrder);
-                    orderItem.setTotalPrice(item.getTotalAmount());
+                    orderItem.setTotalPrice(item.getTotalPrice());
                     return orderItem;
                 })
                 .toList();
@@ -69,7 +68,7 @@ public class OrderServiceImpl implements OrderService{
         orderItems = orderItemRepository.saveAll(orderItems);
 
         cart.getCartItems().forEach(item -> {
-            int quantity = item.getQuantity();
+            int quantity = item.getProductQuantity();
             Product product = item.getProduct();
             product.setQuantity(product.getQuantity() - quantity);
             productRepository.save(product);

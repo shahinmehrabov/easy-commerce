@@ -18,13 +18,13 @@ public class CartItem {
     private Long id;
 
     @PositiveOrZero
-    private int quantity;
+    private int productQuantity;
 
     @PositiveOrZero
     private double discount;
 
     @PositiveOrZero
-    private double totalAmount;
+    private double totalPrice;
 
     @ManyToOne
     private Cart cart;
@@ -32,7 +32,7 @@ public class CartItem {
     @ManyToOne
     private Product product;
 
-    public void setTotalAmount(double totalAmount) {
-        this.totalAmount = NumberUtil.roundPrice(totalAmount);
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = NumberUtil.roundNumber(totalPrice);
     }
 }

@@ -5,8 +5,6 @@ import com.easycommerce.user.User;
 import com.easycommerce.user.address.Address;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,9 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity(name = "orders")
 public class Order {
 
@@ -28,7 +24,7 @@ public class Order {
     private boolean isPaid;
 
     @PositiveOrZero
-    private double totalAmount;
+    private double totalPrice;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime orderDate;

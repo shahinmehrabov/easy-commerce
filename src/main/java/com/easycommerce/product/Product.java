@@ -2,6 +2,7 @@ package com.easycommerce.product;
 
 import com.easycommerce.category.Category;
 import com.easycommerce.user.User;
+import com.easycommerce.util.NumberUtil;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
@@ -48,16 +49,11 @@ public class Product {
     private User user;
 
     public void setPrice(double price) {
-        this.price = price;
-        this.price = roundDouble(this.price);
+        this.price = NumberUtil.roundNumber(price);
     }
 
     public void setPriceAfterDiscount() {
         priceAfterDiscount = price - (price * (discount * 0.01));
-        priceAfterDiscount = roundDouble(priceAfterDiscount);
-    }
-
-    private double roundDouble(double value) {
-        return (double) Math.round(value * 100) / 100;
+        priceAfterDiscount = NumberUtil.roundNumber(priceAfterDiscount);
     }
 }

@@ -2,6 +2,7 @@ package com.easycommerce.category;
 
 import com.easycommerce.exception.ResourceAlreadyExistsException;
 import com.easycommerce.exception.ResourceNotFoundException;
+import com.easycommerce.response.DataResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -20,12 +21,10 @@ public class CategoryServiceImpl implements CategoryService {
     private final ModelMapper modelMapper;
 
     @Override
-    public CategoryResponse getAllCategories(int pageNumber, int pageSize, String sortBy, String sortOrder) {
-        Sort sort = buildSort(sortBy, sortOrder);
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+    public DataResponse<CategoryDTO> getAllCategories(int pageNumber, int pageSize, String sortBy, String sortOrder) {
+        Pageable pageable = buildPageable(sortBy, sortOrder, pageNumber, pageSize);
         Page<Category> page = categoryRepository.findAll(pageable);
-
-        return getCategoryResponse(page, sortBy, sortOrder);
+        return buildDataResponse(page, sortBy, sortOrder);
     }
 
     @Override
@@ -35,12 +34,17 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public CategoryDTO getCategoryByName(String name) {
+        Category category = findCategoryByName(name);
+        return modelMapper.map(category, CategoryDTO.class);
+    }
+
+    @Override
     public CategoryDTO addCategory(CategoryDTO categoryDTO) {
         existsByName(categoryDTO.getName());
 
         Category category = modelMapper.map(categoryDTO, Category.class);
         Category savedCategory = categoryRepository.save(category);
-
         return modelMapper.map(savedCategory, CategoryDTO.class);
     }
 
@@ -48,10 +52,10 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDTO updateCategoryById(Long id, CategoryDTO categoryDTO) {
         existsByName(categoryDTO.getName());
 
-        Category currentCategory = findCategoryById(id);
-        currentCategory.setName(categoryDTO.getName());
+        Category category = findCategoryById(id);
+        category.setName(categoryDTO.getName());
 
-        Category savedCategory = categoryRepository.save(currentCategory);
+        Category savedCategory = categoryRepository.save(category);
         return modelMapper.map(savedCategory, CategoryDTO.class);
     }
 
@@ -71,19 +75,25 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
     }
 
-    private Sort buildSort(String sortBy, String sortOrder) {
-        return sortOrder.equalsIgnoreCase("desc")
-                ? Sort.by(sortBy).descending()
-                : Sort.by(sortBy).ascending();
+    private Category findCategoryByName(String name) {
+        return categoryRepository.findByNameIgnoreCase(name)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "name", name));
     }
 
-    private CategoryResponse getCategoryResponse(Page<Category> page, String sortBy, String sortOrder) {
+    private Pageable buildPageable(String sortBy, String sortOrder, int pageNumber, int pageSize) {
+        Sort sort = sortOrder.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+        return PageRequest.of(pageNumber, pageSize, sort);
+    }
+
+    private DataResponse<CategoryDTO> buildDataResponse(Page<Category> page, String sortBy, String sortOrder) {
         List<CategoryDTO> categories = page.stream()
                 .map(category -> modelMapper.map(category, CategoryDTO.class))
                 .toList();
 
-        return CategoryResponse.builder()
-                .categories(categories)
+        return DataResponse.<CategoryDTO>builder()
+                .data(categories)
                 .pageNumber(page.getNumber())
                 .pageSize(page.getSize())
                 .sortBy(sortBy)

@@ -4,6 +4,7 @@ import com.easycommerce.category.Category;
 import com.easycommerce.category.CategoryRepository;
 import com.easycommerce.exception.ResourceNotFoundException;
 import com.easycommerce.image.ImageService;
+import com.easycommerce.response.DataResponse;
 import com.easycommerce.user.User;
 import com.easycommerce.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -36,41 +37,41 @@ public class ProductServiceImpl implements ProductService {
     private String defaultImageName;
 
     @Override
-    public ProductResponse getAllProducts(int pageNumber, int pageSize, String sortBy, String sortOrder) {
+    public DataResponse<ProductDTO> getAllProducts(int pageNumber, int pageSize, String sortBy, String sortOrder) {
         Sort sort = getSort(sortBy, sortOrder);
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         Page<Product> page = productRepository.findAll(pageable);
 
-        return getProductResponse(page, sortBy, sortOrder);
+        return buildDataResponse(page, sortBy, sortOrder);
     }
 
     @Override
-    public ProductResponse getProductsByCategoryId(Long categoryId, int pageNumber, int pageSize, String sortBy, String sortOrder) {
+    public DataResponse<ProductDTO> getProductsByCategoryId(Long categoryId, int pageNumber, int pageSize, String sortBy, String sortOrder) {
         Category category = findCategoryById(categoryId);
         Sort sort = getSort(sortBy, sortOrder);
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         Page<Product> page = productRepository.findByCategory(category, pageable);
 
-        return getProductResponse(page, sortBy, sortOrder);
+        return buildDataResponse(page, sortBy, sortOrder);
     }
 
     @Override
-    public ProductResponse getProductsByCategoryName(String name, int pageNumber, int pageSize, String sortBy, String sortOrder) {
+    public DataResponse<ProductDTO> getProductsByCategoryName(String name, int pageNumber, int pageSize, String sortBy, String sortOrder) {
         Category category = findCategoryByName(name);
         Sort sort = getSort(sortBy, sortOrder);
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         Page<Product> page = productRepository.findByCategory(category, pageable);
 
-        return getProductResponse(page, sortBy, sortOrder);
+        return buildDataResponse(page, sortBy, sortOrder);
     }
 
     @Override
-    public ProductResponse getProductsByKeyword(String keyword, int pageNumber, int pageSize, String sortBy, String sortOrder) {
+    public DataResponse<ProductDTO> getProductsByKeyword(String keyword, int pageNumber, int pageSize, String sortBy, String sortOrder) {
         Sort sort = getSort(sortBy, sortOrder);
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         Page<Product> page = productRepository.findByKeyword(keyword, pageable);
 
-        return getProductResponse(page, sortBy, sortOrder);
+        return buildDataResponse(page, sortBy, sortOrder);
     }
 
     @Override
@@ -147,13 +148,13 @@ public class ProductServiceImpl implements ProductService {
                 : Sort.by(sortBy).ascending();
     }
 
-    private ProductResponse getProductResponse(Page<Product> page, String sortBy, String sortOrder) {
+    private DataResponse<ProductDTO> buildDataResponse(Page<Product> page, String sortBy, String sortOrder) {
         List<ProductDTO> products = page.stream().map(
                 product -> modelMapper.map(product, ProductDTO.class))
                 .toList();
 
-        return ProductResponse.builder()
-                .products(products)
+        return DataResponse.<ProductDTO>builder()
+                .data(products)
                 .pageNumber(page.getNumber())
                 .pageSize(page.getSize())
                 .sortBy(sortBy)

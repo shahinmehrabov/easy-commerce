@@ -16,12 +16,12 @@ public class OrderDTO {
     private Long id;
     private boolean isPaid;
 
-    @PositiveOrZero(message = "Total price must be equal or greater than 0")
+    @PositiveOrZero(message = "{order.totalPrice.error.message}")
     private double totalPrice;
 
     private LocalDateTime orderDate;
     private List<OrderItemDTO> orderItems;
 
-    @NotNull(message = "Address is required")
+    @NotNull(message = "{order.address.NotNull.message}")
     private Long addressId;
 }

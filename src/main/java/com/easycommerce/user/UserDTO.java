@@ -12,18 +12,18 @@ public class UserDTO {
 
     private Long id;
 
-    @Size(min = 5, max = 20, message = "Username length must be between 5 and 20 characters")
+    @Size(min = 5, max = 20, message = "{user.username.size.message}")
     private String username;
 
-    @Email(message = "Email is invalid")
+    @Email(message = "{user.email.error.message}")
     private String email;
 
-    @NotBlank(message = "Firstname is required")
+    @NotBlank(message = "{user.firstName.NotBlank.message}")
     private String firstName;
 
-    @NotBlank(message = "Lastname is required")
+    @NotBlank(message = "{user.lastName.NotBlank.message}")
     private String lastName;
 
-    @NotBlank(message = "Phone number is required")
+    @NotBlank(message = "{user.phoneNumber.NotBlank.message}")
     private String phoneNumber;
 }

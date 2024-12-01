@@ -10,6 +10,6 @@ public class CategoryDTO {
 
     private Long id;
 
-    @NotBlank(message = "Name is required")
+    @NotBlank(message = "{category.name.NotBlank.message}")
     private String name;
 }

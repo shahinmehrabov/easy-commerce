@@ -1,6 +1,6 @@
 package com.easycommerce.auth;
 
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 public class LoginDTO {
 
-    @Size(min = 5, max = 20, message = "Username length must be between 5 and 20 characters")
+    @NotBlank(message = "{login.username.NotBlank.message}")
     private String username;
 
-    @Size(min = 8, max = 100, message = "Password length must be between 8 and 100 characters")
+    @NotBlank(message = "{login.password.NotBlank.message}")
     private String password;
 }

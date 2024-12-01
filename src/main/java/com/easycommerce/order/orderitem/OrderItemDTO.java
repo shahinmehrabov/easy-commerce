@@ -2,25 +2,25 @@ package com.easycommerce.order.orderitem;
 
 import com.easycommerce.product.ProductDTO;
 import jakarta.validation.constraints.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
 public class OrderItemDTO {
 
     private Long id;
 
-    @Min(value = 1, message = "Product quantity must be equal or greater than 1")
+    @Min(value = 1, message = "{orderItem.quantity.min.message}")
     private int quantity;
 
-    @DecimalMin(value = "0.0", message = "Discount can not be less than 0.0")
-    @DecimalMax(value = "100.0", message = "Discount can not be greater than 100.0")
+    @DecimalMin(value = "0.0", message = "{commons.discount.min.message}")
+    @DecimalMax(value = "100.0", message = "{commons.discount.max.message}")
     private double discount;
 
-    @PositiveOrZero(message = "Order price must be equal or greater than 0")
+    @PositiveOrZero(message = "{orderItem.orderPrice.error.message}")
     private double orderPrice;
 
-    @NotNull(message = "Product is required")
+    @NotNull(message = "{orderItem.product.NotNull.message}")
     private ProductDTO product;
 }

@@ -13,7 +13,7 @@ public class CartDTO {
 
     private Long id;
 
-    @PositiveOrZero(message = "Total price must be equal or greater than 0")
+    @PositiveOrZero(message = "{cart.totalPrice.error.message}")
     private double totalPrice;
 
     private List<ProductDTO> products;

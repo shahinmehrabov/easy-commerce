@@ -9,9 +9,9 @@ import lombok.*;
 @AllArgsConstructor
 public class JwtDTO {
 
-    @NotBlank(message = "Token is required")
+    @NotBlank(message = "{jwt.token.NotBlank.message}")
     private String token;
 
-    @NotBlank(message = "Expiration in milliseconds is required")
+    @NotBlank(message = "{jwt.expiresInMs.NotBlank.message}")
     private long expiresInMs;
 }

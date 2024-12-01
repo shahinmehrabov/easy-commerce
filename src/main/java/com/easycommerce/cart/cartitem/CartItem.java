@@ -17,22 +17,22 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Min(value = 1, message = "Product quantity must be equal or greater than 1")
+    @Min(value = 1, message = "{cartItem.productQuantity.min.message}")
     private int productQuantity;
 
-    @DecimalMin(value = "0.0", message = "Discount can not be less than 0.0")
-    @DecimalMax(value = "100.0", message = "Discount can not be greater than 100.0")
+    @DecimalMin(value = "0.0", message = "{commons.discount.min.message}")
+    @DecimalMax(value = "100.0", message = "{commons.discount.max.message}")
     private double discount;
 
-    @PositiveOrZero(message = "Total price must be equal or greater than 0")
+    @PositiveOrZero(message = "{cartItem.totalPrice.error.message}")
     private double totalPrice;
 
     @ManyToOne
-    @NotNull(message = "Cart is required")
+    @NotNull(message = "{cartItem.cart.NotNull.message}")
     private Cart cart;
 
     @ManyToOne
-    @NotNull(message = "Product is required")
+    @NotNull(message = "{cartItem.product.NotNull.message}")
     private Product product;
 
     public void setTotalPrice(double totalPrice) {

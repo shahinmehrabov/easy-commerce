@@ -9,18 +9,18 @@ public class AddressDTO {
 
     private Long id;
 
-    @NotBlank(message = "Street is required")
+    @NotBlank(message = "{address.street.NotBlank.message}")
     private String street;
 
-    @NotBlank(message = "Building number is required")
+    @NotBlank(message = "{address.buildingNumber.NotBlank.message}")
     private String buildingNumber;
 
-    @NotBlank(message = "City is required")
+    @NotBlank(message = "{address.city.NotBlank.message}")
     private String city;
 
-    @NotBlank(message = "Country is required")
+    @NotBlank(message = "{address.country.NotBlank.message}")
     private String country;
 
-    @NotBlank(message = "Postal code is required")
+    @NotBlank(message = "{address.postalCode.NotBlank.message}")
     private String postalCode;
 }

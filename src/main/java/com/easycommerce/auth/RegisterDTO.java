@@ -10,21 +10,23 @@ import lombok.Setter;
 @Setter
 public class RegisterDTO {
 
-    @Size(min = 5, max = 20, message = "Username length must be between 5 and 20 characters")
+    @NotBlank(message = "{register.username.NotBlank.message}")
+    @Size(min = 5, max = 20, message = "{register.username.size.message}")
     private String username;
 
-    @Email(message = "Email is invalid")
+    @Email(message = "{register.email.error.message}")
     private String email;
 
-    @Size(min = 8, max = 100, message = "Password length must be between 8 and 100 characters")
+    @NotBlank(message = "{register.password.NotBlank.message}")
+    @Size(min = 8, max = 100, message = "{register.password.size.message}")
     private String password;
 
-    @NotBlank(message = "Firstname is required")
+    @NotBlank(message = "{register.firstName.NotBlank.message}")
     private String firstName;
 
-    @NotBlank(message = "Lastname is required")
+    @NotBlank(message = "{register.lastName.NotBlank.message}")
     private String lastName;
 
-    @NotBlank(message = "Phone number is required")
+    @NotBlank(message = "{register.phoneNumber.NotBlank.message}")
     private String phoneNumber;
 }

@@ -4,7 +4,6 @@ import com.easycommerce.order.orderitem.OrderItem;
 import com.easycommerce.user.User;
 import com.easycommerce.user.address.Address;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,8 +21,6 @@ public class Order {
 
     private String stripeSessionId;
     private boolean isPaid;
-
-    @PositiveOrZero
     private double totalPrice;
 
     @Column(nullable = false, updatable = false)

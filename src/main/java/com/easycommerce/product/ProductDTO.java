@@ -10,26 +10,26 @@ public class ProductDTO {
 
     private Long id;
 
-    @NotBlank(message = "Name is required")
+    @NotBlank(message = "{product.name.NotBlank.message}")
     private String name;
 
-    @NotBlank(message = "Description is required")
+    @NotBlank(message = "{product.description.NotBlank.message}")
     private String description;
     private String imageName;
 
-    @PositiveOrZero(message = "Quantity must be equal or greater than 0")
+    @PositiveOrZero(message = "{product.quantity.error.message}")
     private int quantity;
 
-    @PositiveOrZero(message = "Price must be equal or greater than 0")
+    @PositiveOrZero(message = "{product.price.error.message}")
     private double price;
 
-    @DecimalMin(value = "0.0", message = "Discount can not be less than 0.0")
-    @DecimalMax(value = "100.0", message = "Discount can not be greater than 100.0")
+    @DecimalMin(value = "0.0", message = "{commons.discount.min.message}")
+    @DecimalMax(value = "100.0", message = "{commons.discount.max.message}")
     private double discount;
 
-    @PositiveOrZero(message = "Price after discount must be equal or greater than 0")
+    @PositiveOrZero(message = "{product.priceAfterDiscount.error.message}")
     private double priceAfterDiscount;
 
-    @NotNull(message = "Category is required")
+    @NotNull(message = "{product.category.NotNull.message}")
     private Long categoryId;
 }

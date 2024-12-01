@@ -1,6 +1,6 @@
 package com.easycommerce.payment;
 
-import com.easycommerce.exception.APIResponse;
+import com.easycommerce.response.APIResponse;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import lombok.RequiredArgsConstructor;

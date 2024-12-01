@@ -5,14 +5,14 @@ import com.easycommerce.user.User;
 import com.easycommerce.user.address.Address;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
 @Entity(name = "orders")
 public class Order {
 
@@ -32,7 +32,7 @@ public class Order {
     @Column(updatable = false)
     private LocalDateTime paymentDate;
 
-    @OneToMany(mappedBy = "order", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<OrderItem> orderItems;
 
     @ManyToOne

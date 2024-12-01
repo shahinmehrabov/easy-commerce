@@ -4,27 +4,23 @@ import com.easycommerce.cart.cartitem.CartItem;
 import com.easycommerce.user.User;
 import com.easycommerce.util.NumberUtil;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.PositiveOrZero;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
-@NoArgsConstructor
 public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @PositiveOrZero
     private double totalPrice;
 
-    @OneToMany(mappedBy = "cart",
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "cart", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<CartItem> cartItems;
 
     @OneToOne

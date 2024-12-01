@@ -4,32 +4,35 @@ import com.easycommerce.cart.Cart;
 import com.easycommerce.product.Product;
 import com.easycommerce.util.NumberUtil;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.PositiveOrZero;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
-@NoArgsConstructor
 public class CartItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @PositiveOrZero
+    @Min(value = 1, message = "Product quantity must be equal or greater than 1")
     private int productQuantity;
 
-    @PositiveOrZero
+    @DecimalMin(value = "0.0", message = "Discount can not be less than 0.0")
+    @DecimalMax(value = "100.0", message = "Discount can not be greater than 100.0")
     private double discount;
 
-    @PositiveOrZero
+    @PositiveOrZero(message = "Total price must be equal or greater than 0")
     private double totalPrice;
 
     @ManyToOne
+    @NotNull(message = "Cart is required")
     private Cart cart;
 
     @ManyToOne
+    @NotNull(message = "Product is required")
     private Product product;
 
     public void setTotalPrice(double totalPrice) {

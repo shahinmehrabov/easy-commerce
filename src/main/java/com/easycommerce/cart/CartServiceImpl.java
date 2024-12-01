@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -130,6 +131,7 @@ public class CartServiceImpl implements CartService {
         Cart cart = new Cart();
         cart.setTotalPrice(0.0);
         cart.setUser(user);
+        cart.setCartItems(new ArrayList<>());
 
         return cartRepository.save(cart);
     }

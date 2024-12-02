@@ -25,10 +25,17 @@ public class Product {
     @Column(nullable = false)
     private String imageName;
 
-    private int quantity;
-    private double price;
-    private double discount;
-    private double priceAfterDiscount;
+    @Column(nullable = false)
+    private Integer quantity;
+
+    @Column(nullable = false)
+    private Double price;
+
+    @Column(nullable = false)
+    private Double discount;
+
+    @Column(nullable = false)
+    private Double priceAfterDiscount;
 
     @ManyToOne
     private Category category;
@@ -36,7 +43,7 @@ public class Product {
     @ManyToOne
     private User user;
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = NumberUtil.roundNumber(price);
     }
 

@@ -18,7 +18,8 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double totalPrice;
+    @Column(nullable = false)
+    private Double totalPrice;
 
     @OneToMany(mappedBy = "cart", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<CartItem> cartItems;
@@ -26,7 +27,7 @@ public class Cart {
     @OneToOne
     private User user;
 
-    public void setTotalPrice(double totalPrice) {
+    public void setTotalPrice(Double totalPrice) {
         this.totalPrice = NumberUtil.roundNumber(totalPrice);
     }
 }

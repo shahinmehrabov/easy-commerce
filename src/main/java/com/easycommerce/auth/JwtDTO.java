@@ -1,6 +1,7 @@
 package com.easycommerce.auth;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -12,6 +13,6 @@ public class JwtDTO {
     @NotBlank(message = "{jwt.token.NotBlank.message}")
     private String token;
 
-    @NotBlank(message = "{jwt.expiresInMs.NotBlank.message}")
-    private long expiresInMs;
+    @NotNull(message = "{jwt.expiresInMs.NotNull.message}")
+    private Long expiresInMs;
 }

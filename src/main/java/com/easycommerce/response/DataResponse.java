@@ -12,11 +12,11 @@ import java.util.List;
 public class DataResponse<T> {
 
     private List<T> data;
-    private int pageNumber;
-    private int pageSize;
+    private Integer pageNumber;
+    private Integer pageSize;
     private String sortBy;
     private String sortOrder;
-    private long totalElements;
-    private int totalPages;
+    private Long totalElements;
+    private Integer totalPages;
     private boolean isLastPage;
 }

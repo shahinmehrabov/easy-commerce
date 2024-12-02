@@ -21,7 +21,9 @@ public class Order {
 
     private String stripeSessionId;
     private boolean isPaid;
-    private double totalPrice;
+
+    @Column(nullable = false)
+    private Double totalPrice;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime orderDate;

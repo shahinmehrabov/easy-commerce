@@ -16,9 +16,14 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private long productQuantity;
-    private double discount;
-    private double totalPrice;
+    @Column(nullable = false)
+    private Integer productQuantity;
+
+    @Column(nullable = false)
+    private Double discount;
+
+    @Column(nullable = false)
+    private Double totalPrice;
 
     @ManyToOne
     private Product product;
@@ -26,7 +31,7 @@ public class OrderItem {
     @ManyToOne
     private Order order;
 
-    public void setTotalPrice(double totalPrice) {
+    public void setTotalPrice(Double totalPrice) {
         this.totalPrice = NumberUtil.roundNumber(totalPrice);
     }
 }

@@ -17,18 +17,22 @@ public class ProductDTO {
     private String description;
     private String imageName;
 
+    @NotNull(message = "{product.quantity.NotNull.message}")
     @PositiveOrZero(message = "{product.quantity.error.message}")
-    private int quantity;
+    private Integer quantity;
 
+    @NotNull(message = "{product.price.NotNull.message}")
     @PositiveOrZero(message = "{product.price.error.message}")
-    private double price;
+    private Double price;
 
+    @NotNull(message = "{commons.discount.NotNull.message}")
     @DecimalMin(value = "0.0", message = "{commons.discount.min.message}")
     @DecimalMax(value = "100.0", message = "{commons.discount.max.message}")
-    private double discount;
+    private Double discount;
 
+    @NotNull(message = "{product.priceAfterDiscount.NotNull.message}")
     @PositiveOrZero(message = "{product.priceAfterDiscount.error.message}")
-    private double priceAfterDiscount;
+    private Double priceAfterDiscount;
 
     @NotNull(message = "{product.category.NotNull.message}")
     private Long categoryId;

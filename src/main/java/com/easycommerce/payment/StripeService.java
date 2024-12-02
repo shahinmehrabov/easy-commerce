@@ -53,7 +53,7 @@ public class StripeService {
                     return SessionCreateParams.LineItem
                             .builder()
                             .setPriceData(priceData)
-                            .setQuantity(orderItem.getProductQuantity())
+                            .setQuantity(Long.valueOf(orderItem.getProductQuantity()))
                             .build();
                 })
                 .toList();

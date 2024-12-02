@@ -17,15 +17,21 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "{cartItem.productQuantity.NotNull.message}")
     @Min(value = 1, message = "{cartItem.productQuantity.min.message}")
-    private int productQuantity;
+    @Column(nullable = false)
+    private Integer productQuantity;
 
+    @Column(nullable = false)
+    @NotNull(message = "{commons.discount.NotNull.message}")
     @DecimalMin(value = "0.0", message = "{commons.discount.min.message}")
     @DecimalMax(value = "100.0", message = "{commons.discount.max.message}")
-    private double discount;
+    private Double discount;
 
+    @Column(nullable = false)
+    @NotNull(message = "{cartItem.totalPrice.NotNull.message}")
     @PositiveOrZero(message = "{cartItem.totalPrice.error.message}")
-    private double totalPrice;
+    private Double totalPrice;
 
     @ManyToOne
     @NotNull(message = "{cartItem.cart.NotNull.message}")
@@ -35,7 +41,7 @@ public class CartItem {
     @NotNull(message = "{cartItem.product.NotNull.message}")
     private Product product;
 
-    public void setTotalPrice(double totalPrice) {
+    public void setTotalPrice(Double totalPrice) {
         this.totalPrice = NumberUtil.roundNumber(totalPrice);
     }
 }

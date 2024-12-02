@@ -16,8 +16,9 @@ public class OrderDTO {
     private Long id;
     private boolean isPaid;
 
+    @NotNull(message = "{order.totalPrice.NotNull.message}")
     @PositiveOrZero(message = "{order.totalPrice.error.message}")
-    private double totalPrice;
+    private Double totalPrice;
 
     private LocalDateTime orderDate;
     private List<OrderItemDTO> orderItems;

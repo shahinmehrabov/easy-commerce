@@ -23,15 +23,9 @@ public class PaymentController {
         return new ResponseEntity<>(new APIResponse(session.getUrl(), new Date()), HttpStatus.SEE_OTHER);
     }
 
-    @GetMapping("/{orderId}/pay/stripe/success")
-    public ResponseEntity<String> success(@PathVariable Long orderId) throws StripeException {
-        stripeService.verifyOrderPaymentStatus(orderId);
-        return new ResponseEntity<>("success", HttpStatus.OK);
-    }
-
-    @GetMapping("/{orderId}/pay/stripe/cancel")
-    public ResponseEntity<String> cancel(@PathVariable Long orderId) throws StripeException {
-        stripeService.verifyOrderPaymentStatus(orderId);
-        return new ResponseEntity<>("cancel", HttpStatus.OK);
+    @GetMapping("/{orderId}/pay/verify")
+    public ResponseEntity<Boolean> verifyPayment(@PathVariable Long orderId) throws StripeException {
+        boolean isPaid = stripeService.verifyOrderPaymentStatus(orderId);
+        return new ResponseEntity<>(isPaid, HttpStatus.OK);
     }
 }

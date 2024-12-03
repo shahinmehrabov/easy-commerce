@@ -17,7 +17,7 @@ public class OrderItem {
     private Long id;
 
     @Column(nullable = false)
-    private Integer productQuantity;
+    private Integer quantity;
 
     @Column(nullable = false)
     private Double discount;

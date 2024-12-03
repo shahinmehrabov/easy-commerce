@@ -31,7 +31,7 @@ public class CartServiceImpl implements CartService {
         CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
         List<ProductDTO> products = cart.getCartItems().stream()
                 .map(item -> {
-                    item.getProduct().setQuantity(item.getProductQuantity());
+                    item.getProduct().setQuantity(item.getQuantity());
                     return modelMapper.map(item.getProduct(), ProductDTO.class);
                 })
                 .toList();
@@ -58,7 +58,7 @@ public class CartServiceImpl implements CartService {
         CartItem cartItem = new CartItem();
         cartItem.setProduct(product);
         cartItem.setCart(cart);
-        cartItem.setProductQuantity(quantity);
+        cartItem.setQuantity(quantity);
         cartItem.setDiscount(product.getDiscount());
         cartItem.setTotalPrice(product.getPriceAfterDiscount() * quantity);
         CartItem savedCartItem = cartItemRepository.save(cartItem);
@@ -84,12 +84,12 @@ public class CartServiceImpl implements CartService {
 
         CartItem cartItem = findCartItemByProductAndCart(product, cart);
 
-        if (cartItem.getProductQuantity() + quantity <= 0) {
+        if (cartItem.getQuantity() + quantity <= 0) {
             if (cartItemRepository.existsByCartAndProduct(cart, product))
                 deleteProductFromCart(productId);
         } else {
-            cartItem.setProductQuantity(cartItem.getProductQuantity() + quantity);
-            cartItem.setTotalPrice(product.getPriceAfterDiscount() * cartItem.getProductQuantity());
+            cartItem.setQuantity(cartItem.getQuantity() + quantity);
+            cartItem.setTotalPrice(product.getPriceAfterDiscount() * cartItem.getQuantity());
             cartItem.setDiscount(product.getDiscount());
             cart.setTotalPrice(cart.getTotalPrice() + (quantity * product.getPriceAfterDiscount()));
 

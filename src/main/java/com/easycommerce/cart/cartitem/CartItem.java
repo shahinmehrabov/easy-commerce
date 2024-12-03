@@ -20,7 +20,7 @@ public class CartItem {
     @NotNull(message = "Product quantity can not be null")
     @Min(value = 1, message = "Product quantity must be equal or greater than 1")
     @Column(nullable = false)
-    private Integer productQuantity;
+    private Integer quantity;
 
     @Column(nullable = false)
     @NotNull(message = "Discount can not be null")

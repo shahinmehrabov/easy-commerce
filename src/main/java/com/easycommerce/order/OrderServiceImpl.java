@@ -56,7 +56,7 @@ public class OrderServiceImpl implements OrderService{
                 .stream()
                 .map(item -> {
                     OrderItem orderItem = new OrderItem();
-                    orderItem.setProductQuantity(item.getProductQuantity());
+                    orderItem.setQuantity(item.getQuantity());
                     orderItem.setDiscount(item.getDiscount());
                     orderItem.setProduct(item.getProduct());
                     orderItem.setOrder(savedOrder);
@@ -68,7 +68,7 @@ public class OrderServiceImpl implements OrderService{
         orderItems = orderItemRepository.saveAll(orderItems);
 
         cart.getCartItems().forEach(item -> {
-            int quantity = item.getProductQuantity();
+            int quantity = item.getQuantity();
             Product product = item.getProduct();
             product.setQuantity(product.getQuantity() - quantity);
             productRepository.save(product);

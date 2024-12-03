@@ -1,20 +1,21 @@
 package com.easycommerce.payment;
 
+import com.easycommerce.exception.APIException;
 import com.easycommerce.exception.ResourceNotFoundException;
 import com.easycommerce.order.Order;
-import com.easycommerce.order.OrderDTO;
 import com.easycommerce.order.OrderRepository;
 import com.easycommerce.product.Product;
 import com.stripe.Stripe;
+import com.stripe.exception.InvalidRequestException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,7 +26,6 @@ public class StripeService {
     private String stripeApiKey;
 
     private final OrderRepository orderRepository;
-    private final ModelMapper modelMapper;
 
     @PostConstruct
     public void init(){
@@ -35,7 +35,11 @@ public class StripeService {
     public Session createCheckoutSession(Long orderId) throws StripeException {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
-        String domain = String.format("http://localhost:8080/api/user/orders/%s/pay/stripe/", orderId);
+        if (order.isPaid())
+            throw new APIException("The Order has already been paid for");
+
+        String verifyPaymentURL = String.format("http://localhost:8080/api/user/orders/%s/pay/verify", orderId);
+        String ordersURL = "http://localhost:8080/api/user/orders";
         List<SessionCreateParams.LineItem> lineItems = order.getOrderItems().stream()
                 .map(orderItem -> {
                     Product product = orderItem.getProduct();
@@ -53,7 +57,7 @@ public class StripeService {
                     return SessionCreateParams.LineItem
                             .builder()
                             .setPriceData(priceData)
-                            .setQuantity(Long.valueOf(orderItem.getProductQuantity()))
+                            .setQuantity(Long.valueOf(orderItem.getQuantity()))
                             .build();
                 })
                 .toList();
@@ -61,8 +65,8 @@ public class StripeService {
         SessionCreateParams params = SessionCreateParams
                 .builder()
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl(domain + "success")
-                .setCancelUrl(domain + "cancel")
+                .setSuccessUrl(verifyPaymentURL)
+                .setCancelUrl(ordersURL)
                 .addAllLineItem(lineItems)
                 .build();
 
@@ -73,13 +77,22 @@ public class StripeService {
         return session;
     }
 
-    public OrderDTO verifyOrderPaymentStatus(Long orderId) throws StripeException {
+    public boolean verifyOrderPaymentStatus(Long orderId) throws StripeException {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
-        Session session = Session.retrieve(order.getStripeSessionId());
-        if (session.getPaymentStatus().equalsIgnoreCase("paid"))
-            order.setPaid(true);
-        order = orderRepository.save(order);
-        return modelMapper.map(order, OrderDTO.class);
+
+        try {
+            Session session = Session.retrieve(order.getStripeSessionId());
+            if (session.getPaymentStatus().equalsIgnoreCase("paid")) {
+                order.setPaid(true);
+                order.setPaymentDate(LocalDateTime.now());
+            } else
+                order.setPaid(false);
+
+            orderRepository.save(order);
+            return order.isPaid();
+        } catch (InvalidRequestException e) {
+            return false;
+        }
     }
 }

@@ -30,7 +30,6 @@ public class ProductDTO {
     @DecimalMax(value = "100.0", message = "{commons.discount.max.message}")
     private Double discount;
 
-    @NotNull(message = "{product.priceAfterDiscount.NotNull.message}")
     @PositiveOrZero(message = "{product.priceAfterDiscount.error.message}")
     private Double priceAfterDiscount;
 

@@ -17,28 +17,28 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "{cartItem.productQuantity.NotNull.message}")
-    @Min(value = 1, message = "{cartItem.productQuantity.min.message}")
+    @NotNull(message = "Product quantity can not be null")
+    @Min(value = 1, message = "Product quantity must be equal or greater than 1")
     @Column(nullable = false)
     private Integer productQuantity;
 
     @Column(nullable = false)
-    @NotNull(message = "{commons.discount.NotNull.message}")
-    @DecimalMin(value = "0.0", message = "{commons.discount.min.message}")
-    @DecimalMax(value = "100.0", message = "{commons.discount.max.message}")
+    @NotNull(message = "Discount can not be null")
+    @DecimalMin(value = "0.0", message = "Discount can not be less than 0.0")
+    @DecimalMax(value = "100.0", message = "Discount can not be greater than 100.0")
     private Double discount;
 
     @Column(nullable = false)
-    @NotNull(message = "{cartItem.totalPrice.NotNull.message}")
-    @PositiveOrZero(message = "{cartItem.totalPrice.error.message}")
+    @NotNull(message = "Total price can not be null")
+    @PositiveOrZero(message = "Total price must be equal or greater than 0")
     private Double totalPrice;
 
     @ManyToOne
-    @NotNull(message = "{cartItem.cart.NotNull.message}")
+    @NotNull(message = "Cart can not be null")
     private Cart cart;
 
     @ManyToOne
-    @NotNull(message = "{cartItem.product.NotNull.message}")
+    @NotNull(message = "Product can not be null")
     private Product product;
 
     public void setTotalPrice(Double totalPrice) {

@@ -88,12 +88,11 @@ public class CartServiceImpl implements CartService {
             if (cartItemRepository.existsByCartAndProduct(cart, product))
                 deleteProductFromCart(productId);
         } else {
-            cart.setTotalPrice(cart.getTotalPrice() - cartItem.getTotalPrice());
             cartItem.setProductQuantity(cartItem.getProductQuantity() + quantity);
-            cartItem.setTotalPrice(product.getPriceAfterDiscount() * quantity);
+            cartItem.setTotalPrice(product.getPriceAfterDiscount() * cartItem.getProductQuantity());
             cartItem.setDiscount(product.getDiscount());
+            cart.setTotalPrice(cart.getTotalPrice() + (quantity * product.getPriceAfterDiscount()));
 
-            cart.setTotalPrice(cart.getTotalPrice() + cartItem.getTotalPrice());
             cartRepository.save(cart);
         }
 

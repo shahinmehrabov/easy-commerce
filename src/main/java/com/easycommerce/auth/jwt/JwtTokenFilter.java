@@ -32,7 +32,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             }
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
-            return;
         }
 
         filterChain.doFilter(request, response);

@@ -70,10 +70,31 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getLoggedInUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+        String username = authentication.getName();
 
-        return userRepository.findByUsername(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + email));
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+    }
+
+    @Override
+    public UserDTO updateUser(UserDTO userDTO) {
+        User user = getLoggedInUser();
+
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setPhoneNumber(userDTO.getPhoneNumber());
+
+        User savedUser = userRepository.save(user);
+        return modelMapper.map(savedUser, UserDTO.class);
+    }
+
+    @Override
+    public String deleteUser() {
+        User user = getLoggedInUser();
+        userRepository.delete(user);
+        return user.getUsername();
     }
 
     @Override

@@ -7,8 +7,10 @@ import com.easycommerce.auth.RegisterDTO;
 public interface UserService {
 
     JwtDTO login(LoginDTO loginDTO);
-    UserDTO addUser(RegisterDTO registerDTO);
     User getLoggedInUser();
+    UserDTO addUser(RegisterDTO registerDTO);
+    UserDTO updateUser(UserDTO userDTO);
+    String deleteUser();
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
 }

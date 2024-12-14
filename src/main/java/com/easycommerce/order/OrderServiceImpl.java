@@ -10,12 +10,17 @@ import com.easycommerce.order.orderitem.OrderItemDTO;
 import com.easycommerce.order.orderitem.OrderItemRepository;
 import com.easycommerce.product.Product;
 import com.easycommerce.product.ProductRepository;
+import com.easycommerce.response.DataResponse;
 import com.easycommerce.user.User;
 import com.easycommerce.user.UserService;
 import com.easycommerce.user.address.Address;
 import com.easycommerce.user.address.AddressRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,6 +37,16 @@ public class OrderServiceImpl implements OrderService{
     private final ProductRepository productRepository;
     private final CartRepository cartRepository;
     private final ModelMapper modelMapper;
+
+    @Override
+    public DataResponse<OrderDTO> getAllOrders(int pageNumber, int pageSize, String sortBy, String sortOrder) {
+        User user = userService.getLoggedInUser();
+        Sort sort = getSort(sortBy, sortOrder);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+        Page<Order> page = orderRepository.findByUser(user, pageable);
+
+        return buildDataResponse(page, sortBy, sortOrder);
+    }
 
     @Override
     public OrderDTO placeOrder(Long addressId) {
@@ -85,5 +100,28 @@ public class OrderServiceImpl implements OrderService{
                 .toList());
 
         return orderDTO;
+    }
+
+    private Sort getSort(String sortBy, String sortOrder) {
+        return sortOrder.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+    }
+
+    private DataResponse<OrderDTO> buildDataResponse(Page<Order> page, String sortBy, String sortOrder) {
+        List<OrderDTO> orders = page.stream().map(
+                        order -> modelMapper.map(order, OrderDTO.class))
+                .toList();
+
+        return DataResponse.<OrderDTO>builder()
+                .data(orders)
+                .pageNumber(page.getNumber())
+                .pageSize(page.getSize())
+                .sortBy(sortBy)
+                .sortOrder(sortOrder.equalsIgnoreCase("desc") ? "desc" : "asc")
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .isLastPage(page.isLast())
+                .build();
     }
 }
